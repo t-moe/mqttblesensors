@@ -1,0 +1,8 @@
+<map id="Internal_heap_unlink" name="Internal_heap_unlink">
+<area shape="rect" id="node2" href="$Log_8c.html#a87f2e36f80963ac280f67b9ccdf03d0a" title="Log a message. " alt="" coords="432,56,477,83"/>
+<area shape="rect" id="node6" href="$Tree_8c.html#a9c3b81e7e63498e3a8f7bd28c4caec10" title="Remove an item from a tree. " alt="" coords="207,157,373,184"/>
+<area shape="rect" id="node3" href="$Thread_8c.html#a7e92185eb22775c76e1b6b8865468f17" title="Lock a mutex which has already been created, block until ready. " alt="" coords="544,107,691,133"/>
+<area shape="rect" id="node4" href="$Messages_8c.html#a29732d9f9c438e569ddc89a5ee61501c" title="Get a log message by its index. " alt="" coords="560,5,675,32"/>
+<area shape="rect" id="node5" href="$Thread_8c.html#a5faf758226199e7cf93f6b489aca07f7" title="Unlock a mutex which has already been locked. " alt="" coords="536,56,699,83"/>
+<area shape="rect" id="node7" href="$Heap_8c.html#a25214c297c998eba3cfc8282b1162c69" title="Frees a block of memory. " alt="" coords="421,107,488,133"/>
+</map>

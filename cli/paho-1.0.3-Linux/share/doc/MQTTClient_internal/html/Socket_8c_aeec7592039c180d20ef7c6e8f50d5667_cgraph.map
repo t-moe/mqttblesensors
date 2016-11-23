@@ -1,0 +1,8 @@
+<map id="isReady" name="isReady">
+<area shape="rect" id="node2" href="$LinkedList_8c.html#acad319e9ce896ff1fff30ddbeb06d22d" title="Finds an element in a list by comparing the content or pointer to the content. " alt="" coords="493,107,592,133"/>
+<area shape="rect" id="node4" href="$LinkedList_8c.html#a1738915a6d6f10022e9ee1481c0ae452" title="List callback function for comparing integers. " alt="" coords="351,56,445,83"/>
+<area shape="rect" id="node5" href="$LinkedList_8c.html#a4bb7c34fe9a5832d65f530091e0fad0d" title="Removes and frees an element in a list by comparing the content. " alt="" coords="151,157,275,184"/>
+<area shape="rect" id="node7" href="$Socket_8c.html#ae95673b434f2c489ecefe4688c80be2d" title="Indicate whether any data is pending outbound for a socket. " alt="" coords="124,5,303,32"/>
+<area shape="rect" id="node3" href="$LinkedList_8c.html#a7c6fba7f4b569c69829676bed2852ee9" title="Forward iteration through a list. " alt="" coords="640,107,767,133"/>
+<area shape="rect" id="node6" href="$LinkedList_8c.html#a7c3ca6a923cf771a5e68b25047d3df42" title="Removes and optionally frees an element in a list by comparing the content. " alt="" coords="357,157,439,184"/>
+</map>

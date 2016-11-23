@@ -1,0 +1,16 @@
+<map id="Socket_close" name="Socket_close">
+<area shape="rect" id="node2" href="$Socket_8c.html#a2e7c21836cd061947d6d6e28446c4a59" title="Close a socket without removing it from the select list. " alt="" coords="171,81,310,108"/>
+<area shape="rect" id="node4" href="$Log_8c.html#a87f2e36f80963ac280f67b9ccdf03d0a" title="Log a message. " alt="" coords="560,56,605,83"/>
+<area shape="rect" id="node8" href="$LinkedList_8c.html#a4bb7c34fe9a5832d65f530091e0fad0d" title="Removes and frees an element in a list by comparing the content. " alt="" coords="369,132,493,159"/>
+<area shape="rect" id="node11" href="$LinkedList_8c.html#a7c6fba7f4b569c69829676bed2852ee9" title="Forward iteration through a list. " alt="" coords="883,284,1009,311"/>
+<area shape="rect" id="node12" href="$LinkedList_8c.html#a1738915a6d6f10022e9ee1481c0ae452" title="List callback function for comparing integers. " alt="" coords="193,233,288,260"/>
+<area shape="rect" id="node13" href="$SocketBuffer_8c.html#a0601e12cab5b7c4777df10ca6d38a41b" title="Cleanup any buffers for a specific socket. " alt="" coords="160,183,321,209"/>
+<area shape="rect" id="node3" href="$Socket_8c.html#a47824ad5afba267b9488150e1f7e8610" title="Gets the specific error corresponding to SOCKET_ERROR. " alt="" coords="379,81,483,108"/>
+<area shape="rect" id="node5" href="$Thread_8c.html#a7e92185eb22775c76e1b6b8865468f17" title="Lock a mutex which has already been created, block until ready. " alt="" coords="680,107,827,133"/>
+<area shape="rect" id="node6" href="$Messages_8c.html#a29732d9f9c438e569ddc89a5ee61501c" title="Get a log message by its index. " alt="" coords="696,5,811,32"/>
+<area shape="rect" id="node7" href="$Thread_8c.html#a5faf758226199e7cf93f6b489aca07f7" title="Unlock a mutex which has already been locked. " alt="" coords="672,56,835,83"/>
+<area shape="rect" id="node9" href="$LinkedList_8c.html#a7c3ca6a923cf771a5e68b25047d3df42" title="Removes and optionally frees an element in a list by comparing the content. " alt="" coords="541,183,624,209"/>
+<area shape="rect" id="node10" href="$LinkedList_8c.html#acad319e9ce896ff1fff30ddbeb06d22d" title="Finds an element in a list by comparing the content or pointer to the content. " alt="" coords="704,233,803,260"/>
+<area shape="rect" id="node14" href="$SocketBuffer_8c.html#acebc1cbb93be4588f33b04ed404f6dbf" title="List callback function for comparing socket_queues by socket. " alt="" coords="371,284,492,311"/>
+<area shape="rect" id="node15" href="$LinkedList_8c.html#a8430370b2b15c56ec95bb8e7e36753a5" title="Removes and frees an item in a list by comparing the pointer to the content. " alt="" coords="384,183,479,209"/>
+</map>

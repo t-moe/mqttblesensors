@@ -1,0 +1,4 @@
+<map id="MQTTClient_connectOptions" name="MQTTClient_connectOptions">
+<area shape="rect" id="node2" href="$structMQTTClient__willOptions.html" title="MQTTClient_willOptions defines the MQTT &quot;Last Will and Testament&quot; (LWT) settings for the client..." alt="" coords="5,5,172,32"/>
+<area shape="rect" id="node3" href="$structMQTTClient__SSLOptions.html" title="MQTTClient_sslProperties defines the settings to establish an SSL/TLS connection using the OpenSSL li..." alt="" coords="197,5,370,32"/>
+</map>

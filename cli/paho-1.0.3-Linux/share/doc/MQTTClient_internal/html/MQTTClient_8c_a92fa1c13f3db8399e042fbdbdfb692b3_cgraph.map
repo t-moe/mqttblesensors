@@ -1,0 +1,46 @@
+<map id="MQTTClient_subscribeMany" name="MQTTClient_subscribeMany">
+<area shape="rect" id="node2" href="$Thread_8c.html#a7e92185eb22775c76e1b6b8865468f17" title="Lock a mutex which has already been created, block until ready. " alt="" coords="1879,816,2025,843"/>
+<area shape="rect" id="node3" href="$utf-8_8c.html#a4f3cf77538d867bb5b421bcb687dccdf" title="Validate a null&#45;terminated string has only UTF&#45;8 characters. " alt="" coords="271,5,420,32"/>
+<area shape="rect" id="node6" href="$MQTTProtocolClient_8c.html#a0fa824f9702cb6b0d7c800fd65198fce" title="Assign a new message id for a client. " alt="" coords="248,405,443,432"/>
+<area shape="rect" id="node8" href="$LinkedList_8c.html#a7c6fba7f4b569c69829676bed2852ee9" title="Forward iteration through a list. " alt="" coords="1684,208,1811,235"/>
+<area shape="rect" id="node10" href="$LinkedList_8c.html#a27e2cccab9752618ead91eafbe2a9a46" title="Allocates and initializes a new list structure. " alt="" coords="298,468,393,495"/>
+<area shape="rect" id="node12" href="$LinkedList_8c.html#ad02ee8fbea38b825280772de89529d20" title="Append an item to a list. " alt="" coords="1488,512,1581,539"/>
+<area shape="rect" id="node14" href="$MQTTProtocolOut_8c.html#adaed5991a304b64fba7fa95bc84efb49" title="MQTT outgoing subscribe processing for a client. " alt="" coords="257,329,434,356"/>
+<area shape="rect" id="node29" href="$Thread_8c.html#a5faf758226199e7cf93f6b489aca07f7" title="Unlock a mutex which has already been locked. " alt="" coords="1871,1019,2033,1045"/>
+<area shape="rect" id="node33" href="$LinkedList_8c.html#a8b3e61bc873a90ad2ea43a15e6c001f4" title="Removes and but does not free all items in a list, and frees the list itself. " alt="" coords="275,715,415,741"/>
+<area shape="rect" id="node34" href="$MQTTProtocolOut_8c.html#a662c001eb1105428b5cf8474ae4c0456" title="Process an incoming suback packet for a socket. " alt="" coords="1184,259,1397,285"/>
+<area shape="rect" id="node38" href="$MQTTClient_8c.html#a557f4794895060f1279f9df64a36cef9" title="mqttclient_mutex must be locked when you call this function, if multi threaded " alt="" coords="744,809,912,850"/>
+<area shape="rect" id="node4" href="$utf-8_8c.html#ad2012627fca4b4bdd9f67bde49b0d1cb" title="Validate a length&#45;delimited string has only UTF&#45;8 characters. " alt="" coords="538,5,649,32"/>
+<area shape="rect" id="node5" href="$utf-8_8c.html#adfdad3322f31972a083dbb46caab2845" title="Validate a single UTF&#45;8 character. " alt="" coords="755,5,901,32"/>
+<area shape="rect" id="node7" href="$LinkedList_8c.html#acad319e9ce896ff1fff30ddbeb06d22d" title="Finds an element in a list by comparing the content or pointer to the content. " alt="" coords="1485,360,1584,387"/>
+<area shape="rect" id="node9" href="$MQTTProtocolClient_8c.html#a286c2ef2904b5eb4a0ffa5b598961c67" title="List callback function for comparing Message structures by message id. " alt="" coords="517,373,670,400"/>
+<area shape="rect" id="node11" href="$LinkedList_8c.html#aa254fb1eab8e30d0e03859b333dc22ed" title="Sets a list structure to empty &#45; all null values. " alt="" coords="556,475,631,501"/>
+<area shape="rect" id="node13" href="$LinkedList_8c.html#a321a3598d6979c7af3f995b77ea2cec3" title="Append an already allocated ListElement and content to a list. " alt="" coords="1672,512,1823,539"/>
+<area shape="rect" id="node15" href="$MQTTPacketOut_8c.html#addc835836eb89fa39815b0f96d659c59" title="Send an MQTT subscribe packet down a socket. " alt="" coords="491,323,696,349"/>
+<area shape="rect" id="node16" href="$MQTTPacket_8c.html#a07aa0146eda3d32979142e7df8ad5fc3" title="Writes an integer as 2 bytes to an output buffer. " alt="" coords="1014,272,1082,299"/>
+<area shape="rect" id="node17" href="$MQTTPacket_8c.html#af0fcaa11ac05ce448a433a53f9cae420" title="Writes a &quot;UTF&quot; string to an output buffer. " alt="" coords="790,323,866,349"/>
+<area shape="rect" id="node18" href="$MQTTPacket_8c.html#ad29ec8b2fbf0ec0195621b44f8945923" title="Writes one character to an output buffer. " alt="" coords="787,373,869,400"/>
+<area shape="rect" id="node19" href="$MQTTPacket_8c.html#a561ff1cb747d27795d1f4fd985e78588" title="Sends an MQTT packet in one system call write. " alt="" coords="759,475,897,501"/>
+<area shape="rect" id="node27" href="$Log_8c.html#a87f2e36f80963ac280f67b9ccdf03d0a" title="Log a message. " alt="" coords="1725,715,1770,741"/>
+<area shape="rect" id="node20" href="$MQTTPacket_8c.html#aadd77a4fa1b2d5c7791e3542c56af856" title="Encodes the message length according to the MQTT algorithm. " alt="" coords="971,461,1125,488"/>
+<area shape="rect" id="node21" href="$MQTTPacket_8c.html#a132d2d5b304d37cd2348a973f7b315de" title="Calculates an integer from two bytes read from the input buffer. " alt="" coords="1015,512,1081,539"/>
+<area shape="rect" id="node22" href="$MQTTPersistence_8c.html#a41168618b27d3c1ca74d6a7c4ab26214" title="Adds a record to the persistent store. " alt="" coords="1211,309,1370,336"/>
+<area shape="rect" id="node24" href="$Socket_8c.html#a05dbad60845044788d3b239df98281e3" title="Attempts to write a series of buffers to a socket in one system call so that they are sent as one pac..." alt="" coords="983,563,1113,589"/>
+<area shape="rect" id="node23" href="$Clients_8c.html#a82dc4e265fecdaea2810ccdeab0abf52" title="List callback function for comparing clients by socket. " alt="" coords="1455,309,1614,336"/>
+<area shape="rect" id="node25" href="$Socket_8c.html#ae95673b434f2c489ecefe4688c80be2d" title="Indicate whether any data is pending outbound for a socket. " alt="" coords="1201,411,1380,437"/>
+<area shape="rect" id="node30" href="$Socket_8c.html#aec4ee8ecb248d29d315d2624a88ed1c3" title="Attempts to write a series of iovec buffers to a socket in one system call so that they are sent as o..." alt="" coords="1235,664,1346,691"/>
+<area shape="rect" id="node32" href="$SocketBuffer_8c.html#a5c1cce77d5ba528483bbb108f851db2f" title="A socket write was interrupted so store the remaining data. " alt="" coords="1194,461,1387,488"/>
+<area shape="rect" id="node26" href="$LinkedList_8c.html#a1738915a6d6f10022e9ee1481c0ae452" title="List callback function for comparing integers. " alt="" coords="1487,411,1582,437"/>
+<area shape="rect" id="node28" href="$Messages_8c.html#a29732d9f9c438e569ddc89a5ee61501c" title="Get a log message by its index. " alt="" coords="1895,715,2009,741"/>
+<area shape="rect" id="node31" href="$Socket_8c.html#a47824ad5afba267b9488150e1f7e8610" title="Gets the specific error corresponding to SOCKET_ERROR. " alt="" coords="1483,664,1587,691"/>
+<area shape="rect" id="node35" href="$MQTTPacket_8c.html#a4262b8f35885dc123f59268fb74cec3d" title="Free allocated storage for a suback packet. " alt="" coords="1445,107,1624,133"/>
+<area shape="rect" id="node36" href="$LinkedList_8c.html#a276950531b3f54e0dda27d597572c192" title="Removes and frees all items in a list, and frees the list itself. " alt="" coords="1712,5,1783,32"/>
+<area shape="rect" id="node37" href="$LinkedList_8c.html#a3cf8578dba23f97dd0411e85fe3b7ff2" title="Removes and frees all items in a list, leaving the list ready for new items. " alt="" coords="1909,5,1995,32"/>
+<area shape="rect" id="node39" href="$MQTTClient_8c.html#a2ce7b4ac49581bb8b17e3f1a31bc7fc6" title="mqttclient_mutex must be locked when you call this function, if multi threaded " alt="" coords="960,917,1136,944"/>
+<area shape="rect" id="node40" href="$MQTTClient_8c.html#a8ad3d29864a9ca08202b0832e0f6678e" title="When implementing a single&#45;threaded client, call this function periodically to allow processing of me..." alt="" coords="1227,816,1355,843"/>
+<area shape="rect" id="node42" href="$Thread_8c.html#ad327c467c568b27be4c3676fc698e129" title="Check to see if a semaphore has been posted, without waiting. " alt="" coords="1218,1019,1363,1045"/>
+<area shape="rect" id="node43" href="$Thread_8c.html#a4d0bbfc059da3cd10626244d3468d319" title="Wait for a semaphore to be posted, or timeout. " alt="" coords="1224,1069,1357,1096"/>
+<area shape="rect" id="node44" href="$Thread_8c.html#a2e22778d99253b899d19a5c92826b4e1" title="Start a new thread. " alt="" coords="1239,917,1342,944"/>
+<area shape="rect" id="node45" href="$MQTTClient_8c.html#a43961cb53e692999e3f4cf1fe3dfd4e2" title="Wrapper function to call connection lost on a separate thread. " alt="" coords="1217,968,1364,995"/>
+<area shape="rect" id="node41" href="$MQTTClient_8c.html#af705886a44c359b7763e1e907ced9bfd" title="List callback function for comparing clients by socket. " alt="" coords="1461,816,1608,843"/>
+</map>

@@ -1,0 +1,10 @@
+<map id="MQTTClients" name="MQTTClients">
+<area shape="rect" id="node2" href="$structClients.html" title="Data related to one client. " alt="" coords="361,245,426,272"/>
+<area shape="rect" id="node3" href="$structMQTTClient__persistence.html" title="A structure containing the function pointers to a persistence implementation and the context or state..." alt="" coords="5,127,179,153"/>
+<area shape="rect" id="node4" href="$structwillMessages.html" title="Client will message data. " alt="" coords="203,127,307,153"/>
+<area shape="rect" id="node5" href="$structnetworkHandles.html" title="networkHandles" alt="" coords="331,127,455,153"/>
+<area shape="rect" id="node6" href="$structList.html" title="Structure to hold all data for one list. " alt="" coords="479,127,523,153"/>
+<area shape="rect" id="node7" href="$structListElementStruct.html" title="Structure to hold all data for one list element. " alt="" coords="433,7,569,33"/>
+<area shape="rect" id="node8" href="$structMQTTPacket.html" title="Data for a packet with header only. " alt="" coords="493,245,592,272"/>
+<area shape="rect" id="node9" href="$unionHeader.html" title="Bitfields for the MQTT header byte. " alt="" coords="551,127,620,153"/>
+</map>

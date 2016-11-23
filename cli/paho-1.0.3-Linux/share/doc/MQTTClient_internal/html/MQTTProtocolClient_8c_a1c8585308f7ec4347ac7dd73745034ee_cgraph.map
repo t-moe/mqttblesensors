@@ -1,0 +1,6 @@
+<map id="MQTTProtocol_createMessage" name="MQTTProtocol_createMessage">
+<area shape="rect" id="node2" href="$MQTTProtocolClient_8c.html#ac753a3ad12292a0a9c2f4343bd33817e" title="Store message data for possible retry. " alt="" coords="268,31,487,57"/>
+<area shape="rect" id="node3" href="$Heap_8c.html#a0f10ff94faca02a6f81953c889802954" title="Utility to find an item in the heap. " alt="" coords="535,31,649,57"/>
+<area shape="rect" id="node4" href="$Thread_8c.html#a7e92185eb22775c76e1b6b8865468f17" title="Lock a mutex which has already been created, block until ready. " alt="" coords="705,5,852,32"/>
+<area shape="rect" id="node5" href="$Thread_8c.html#a5faf758226199e7cf93f6b489aca07f7" title="Unlock a mutex which has already been locked. " alt="" coords="697,56,860,83"/>
+</map>

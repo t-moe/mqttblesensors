@@ -1,0 +1,12 @@
+<map id="Socket_continueWrite" name="Socket_continueWrite">
+<area shape="rect" id="node2" href="$SocketBuffer_8c.html#a5f22a1ac450cb1805e2ab8f2ae3da80e" title="Get any queued write data for a specific socket. " alt="" coords="212,56,375,83"/>
+<area shape="rect" id="node6" href="$Socket_8c.html#aec4ee8ecb248d29d315d2624a88ed1c3" title="Attempts to write a series of iovec buffers to a socket in one system call so that they are sent as o..." alt="" coords="238,107,349,133"/>
+<area shape="rect" id="node8" href="$Log_8c.html#a87f2e36f80963ac280f67b9ccdf03d0a" title="Log a message. " alt="" coords="690,132,735,159"/>
+<area shape="rect" id="node3" href="$LinkedList_8c.html#acad319e9ce896ff1fff30ddbeb06d22d" title="Finds an element in a list by comparing the content or pointer to the content. " alt="" coords="463,5,561,32"/>
+<area shape="rect" id="node5" href="$SocketBuffer_8c.html#a39f1ee9c98bc12a7be4d7a40b03550d5" title="List callback function for comparing pending_writes by socket. " alt="" coords="423,56,601,83"/>
+<area shape="rect" id="node4" href="$LinkedList_8c.html#a7c6fba7f4b569c69829676bed2852ee9" title="Forward iteration through a list. " alt="" coords="649,5,776,32"/>
+<area shape="rect" id="node7" href="$Socket_8c.html#a47824ad5afba267b9488150e1f7e8610" title="Gets the specific error corresponding to SOCKET_ERROR. " alt="" coords="460,107,564,133"/>
+<area shape="rect" id="node9" href="$Thread_8c.html#a7e92185eb22775c76e1b6b8865468f17" title="Lock a mutex which has already been created, block until ready. " alt="" coords="832,81,979,108"/>
+<area shape="rect" id="node10" href="$Messages_8c.html#a29732d9f9c438e569ddc89a5ee61501c" title="Get a log message by its index. " alt="" coords="848,132,963,159"/>
+<area shape="rect" id="node11" href="$Thread_8c.html#a5faf758226199e7cf93f6b489aca07f7" title="Unlock a mutex which has already been locked. " alt="" coords="824,183,987,209"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="Socket_getpeer" name="Socket_getpeer">
+<area shape="rect" id="node2" href="$Socket_8c.html#a47824ad5afba267b9488150e1f7e8610" title="Gets the specific error corresponding to SOCKET_ERROR. " alt="" coords="384,56,488,83"/>
+<area shape="rect" id="node7" href="$Socket_8c.html#a6466a5260d0a18f10b03b1146d089496" title="Convert a numeric address to character string. " alt="" coords="176,81,336,108"/>
+<area shape="rect" id="node3" href="$Log_8c.html#a87f2e36f80963ac280f67b9ccdf03d0a" title="Log a message. " alt="" coords="536,56,581,83"/>
+<area shape="rect" id="node4" href="$Thread_8c.html#a7e92185eb22775c76e1b6b8865468f17" title="Lock a mutex which has already been created, block until ready. " alt="" coords="637,5,784,32"/>
+<area shape="rect" id="node5" href="$Messages_8c.html#a29732d9f9c438e569ddc89a5ee61501c" title="Get a log message by its index. " alt="" coords="653,56,768,83"/>
+<area shape="rect" id="node6" href="$Thread_8c.html#a5faf758226199e7cf93f6b489aca07f7" title="Unlock a mutex which has already been locked. " alt="" coords="629,107,792,133"/>
+</map>

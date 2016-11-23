@@ -1,0 +1,9 @@
+<map id="TreeRemoveIndex" name="TreeRemoveIndex">
+<area shape="rect" id="node2" href="$Tree_8c.html#a9c3b81e7e63498e3a8f7bd28c4caec10" title="Remove an item from a tree. " alt="" coords="187,81,353,108"/>
+<area shape="rect" id="node3" href="$Heap_8c.html#a25214c297c998eba3cfc8282b1162c69" title="Frees a block of memory. " alt="" coords="401,56,468,83"/>
+<area shape="rect" id="node4" href="$Thread_8c.html#a7e92185eb22775c76e1b6b8865468f17" title="Lock a mutex which has already been created, block until ready. " alt="" coords="819,56,965,83"/>
+<area shape="rect" id="node5" href="$Heap_8c.html#a18db405bf62aa7e36e4f8756729a5d8c" title="Remove an item from the recorded heap without actually freeing it. " alt="" coords="516,107,669,133"/>
+<area shape="rect" id="node8" href="$Thread_8c.html#a5faf758226199e7cf93f6b489aca07f7" title="Unlock a mutex which has already been locked. " alt="" coords="811,5,973,32"/>
+<area shape="rect" id="node6" href="$Log_8c.html#a87f2e36f80963ac280f67b9ccdf03d0a" title="Log a message. " alt="" coords="717,107,763,133"/>
+<area shape="rect" id="node7" href="$Messages_8c.html#a29732d9f9c438e569ddc89a5ee61501c" title="Get a log message by its index. " alt="" coords="835,107,949,133"/>
+</map>
