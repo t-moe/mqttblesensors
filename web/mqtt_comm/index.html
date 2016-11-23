@@ -48,6 +48,8 @@
         // Called when a message arrives
         function onMessageArrived(message) {
             console.log("Message arrived: topic=" + message.destinationName + ", message=" + message.payloadString);
+			var span = document.getElementById('message');
+			span.textContent= "topic:	" + message.destinationName + "		message:	" + message.payloadString;
         }
 
         function send() {
@@ -63,6 +65,10 @@
 
 <body>
     <button onclick="send()">Push a new message</button>
+	
+	<p>Gefundene BLE Sensoren:<p>
+	
+    <span id="message"></span>
 </body>
 
 </html>
