@@ -1,6 +1,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include "sensorhub.h"
+#include "mqtt.h"
 
 int main(int argc, char *argv[])
 {
@@ -8,6 +9,9 @@ int main(int argc, char *argv[])
 
 
     SensorHub hub;
+
+
+    MQTT mqtt;
 
 
     return a.exec();

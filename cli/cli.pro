@@ -9,14 +9,21 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += main.cpp \
-    sensorhub.cpp
+SOURCES +=  main.cpp \
+            sensorhub.cpp \
+    mqtt.cpp
+
+HEADERS +=  sensorhub.h \
+    mqtt.h
 
 target.path = /home/pi
 INSTALLS+= target
 
 #QMAKE_LFLAGS+=-lpthread
 
-HEADERS += \
-    sensorhub.h
+
+#LIBS += -lpthread  #-lrt
+LIBS += -L$$PWD/paho-1.0.3-Linux/lib/static/ -lpaho-mqtt3a_static
+INCLUDEPATH  += $$PWD/paho-1.0.3-Linux/include
+DEPENDPATH  += $$PWD/paho-1.0.3-Linux/include
 
