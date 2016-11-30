@@ -62,11 +62,11 @@ void SensorHub::dataReady()
             QJsonObject obj = doc.object();
             emit eventReceived(obj);
 
-            /*if(obj["event"].toString() == "DeviceDiscovered") {
+            if(obj["event"].toString() == "DeviceDiscovered") {
                 qDebug() << obj["data"].toObject()["name"].toString();
             }
 
-            qDebug() << obj;*/
+            qDebug() << obj;
 
         } else {
             if (l < 0) { //fatal parser error

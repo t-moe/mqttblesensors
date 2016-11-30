@@ -47,7 +47,8 @@
 
         // Called when a message arrives
         function onMessageArrived(message) {
-            console.log("Message arrived: topic=" + message.destinationName + ", message=" + message.payloadString);
+            var obj = JSON.parse(message.payloadString);
+            console.log("Message arrived: topic=" + message.destinationName + ", message=",obj);
 			var span = document.getElementById('message');
 			span.textContent= "topic:	" + message.destinationName + "		message:	" + message.payloadString;
         }

@@ -12,6 +12,17 @@ int main(int argc, char *argv[])
 
 
     MQTT mqtt;
+    mqtt.waitOnConnected();
+
+    QJsonObject tst;
+    tst["a"] = 3;
+    tst["b"]= "hallo";
+
+    mqtt.sendMesage(tst);
+
+
+    tst["c"] = 13;
+    mqtt.sendMesage(tst);
 
 
     return a.exec();

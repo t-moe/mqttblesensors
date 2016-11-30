@@ -1,12 +1,13 @@
 #include "mqtt.h"
+#include <QJsonDocument>
+#include <QDebug>
 
-#include "MQTTAsync.h"
+
 
 #define ADDRESS     "tcp://iot.i3s.bfh.ch:1883"
 
 #define CLIENTID    "ExampleClientPub"
 #define TOPIC       "EmbSy/gruppe_11/aui"
-#define PAYLOAD     "Hello World!"
 #define QOS         1
 #define TIMEOUT     10000L
 
@@ -26,93 +27,59 @@
 
 
 
-
-
-volatile MQTTAsync_token deliveredtoken;
-
-int finished = 0;
-
-void connlost(void *context, char *cause)
+void MQTT::connlost(void *context, char *cause)
 {
-    MQTTAsync client = (MQTTAsync)context;
+    MQTT* inst = static_cast<MQTT*>(context);
+
     MQTTAsync_connectOptions conn_opts = MQTTAsync_connectOptions_initializer;
     int rc;
 
-    printf("\nConnection lost\n");
-    printf("     cause: %s\n", cause);
+    qDebug() << "Connection lost. cause " << cause;
 
-    printf("Reconnecting\n");
+    qDebug() << "Reconnecting";
+
     conn_opts.keepAliveInterval = 20;
     conn_opts.cleansession = 1;
-    if ((rc = MQTTAsync_connect(client, &conn_opts)) != MQTTASYNC_SUCCESS)
+    if ((rc = MQTTAsync_connect(inst->_client, &conn_opts)) != MQTTASYNC_SUCCESS)
     {
-        printf("Failed to start connect, return code %d\n", rc);
-        finished = 1;
+        qDebug() << "Failed to start connect, return code " << rc;
+        inst->_connected = false;
     }
 }
 
 
-void onDisconnect(void* context, MQTTAsync_successData* response)
+void MQTT::onDisconnect(void* context, MQTTAsync_successData* response)
 {
-    printf("Successful disconnection\n");
-    finished = 1;
+     MQTT* inst = static_cast<MQTT*>(context);
+     inst->_connected = false;
+    qDebug() << "Successful disconnection";
+
 }
 
 
-void onSend(void* context, MQTTAsync_successData* response)
+void MQTT::onSend(void* context, MQTTAsync_successData* response)
 {
-    MQTTAsync client = (MQTTAsync)context;
-    MQTTAsync_disconnectOptions opts = MQTTAsync_disconnectOptions_initializer;
-    int rc;
-
-    printf("Message with token value %d delivery confirmed\n", response->token);
-
-    opts.onSuccess = onDisconnect;
-    opts.context = client;
-
-    if ((rc = MQTTAsync_disconnect(client, &opts)) != MQTTASYNC_SUCCESS)
-    {
-        printf("Failed to start sendMessage, return code %d\n", rc);
-        exit(EXIT_FAILURE);
-    }
+    MQTT* inst = static_cast<MQTT*>(context);
+    qDebug() << "Message with token value " << response->token << "delivery confirmed";
 }
 
 
-void onConnectFailure(void* context, MQTTAsync_failureData* response)
+void MQTT::onConnectFailure(void* context, MQTTAsync_failureData* response)
 {
-    printf("Connect failed, rc %d\n", response ? response->code : 0);
-    finished = 1;
+    MQTT* inst = static_cast<MQTT*>(context);
+    qDebug() << "Connect failed, rc" <<(response ? response->code : 0);
 }
 
 
-void onConnect(void* context, MQTTAsync_successData* response)
+
+
+void MQTT::onConnect(void* context, MQTTAsync_successData* response)
 {
-    MQTTAsync client = (MQTTAsync)context;
-    MQTTAsync_responseOptions opts = MQTTAsync_responseOptions_initializer;
-    MQTTAsync_message pubmsg = MQTTAsync_message_initializer;
-    int rc;
+    MQTT* inst = static_cast<MQTT*>(context);
 
-    printf("Successful connection\n");
-
-    opts.onSuccess = onSend;
-    opts.context = client;
-
-    char arr [] = PAYLOAD;
-
-    pubmsg.payload = reinterpret_cast<void*>(arr);
-    pubmsg.payloadlen = strlen(PAYLOAD);
-    pubmsg.qos = QOS;
-    pubmsg.retained = 0;
-    deliveredtoken = 0;
-
-    if ((rc = MQTTAsync_sendMessage(client, TOPIC, &pubmsg, &opts)) != MQTTASYNC_SUCCESS)
-    {
-        printf("Failed to start sendMessage, return code %d\n", rc);
-        exit(EXIT_FAILURE);
-    }
+    qDebug() <<"Successful connection";
+    inst->_connected = true;
 }
-
-
 
 
 
@@ -120,15 +87,14 @@ void onConnect(void* context, MQTTAsync_successData* response)
 
 MQTT::MQTT(QObject *parent) : QObject(parent)
 {
-    MQTTAsync client;
+    _connected = false;
+
     MQTTAsync_connectOptions conn_opts = MQTTAsync_connectOptions_initializer;
-    MQTTAsync_message pubmsg = MQTTAsync_message_initializer;
-    MQTTAsync_token token;
     int rc;
 
-    MQTTAsync_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
+    MQTTAsync_create(&_client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
 
-    MQTTAsync_setCallbacks(client, NULL, connlost, NULL, NULL);
+    MQTTAsync_setCallbacks(_client, NULL, connlost, NULL, NULL);
 
     conn_opts.username = USERNAME;
     conn_opts.password = PASSWORD;
@@ -136,22 +102,63 @@ MQTT::MQTT(QObject *parent) : QObject(parent)
     conn_opts.cleansession = 1;
     conn_opts.onSuccess = onConnect;
     conn_opts.onFailure = onConnectFailure;
-    conn_opts.context = client;
-    if ((rc = MQTTAsync_connect(client, &conn_opts)) != MQTTASYNC_SUCCESS)
+    conn_opts.context = this;
+    if ((rc = MQTTAsync_connect(_client, &conn_opts)) != MQTTASYNC_SUCCESS)
     {
-        printf("Failed to start connect, return code %d\n", rc);
-        exit(EXIT_FAILURE);
+        qDebug() << "Failed to start connect, return code" << rc;
+        return;
     }
 
-    printf("Waiting for publication of %s\n"
-         "on topic %s for client with ClientID: %s\n",
-         PAYLOAD, TOPIC, CLIENTID);
-    while (!finished)
-        #if defined(WIN32)
-            Sleep(100);
-        #else
-            usleep(10000L);
-        #endif
 
-    MQTTAsync_destroy(&client);
+}
+
+void MQTT::sendMesage(const QJsonObject &msg)
+{
+    MQTTAsync_responseOptions opts = MQTTAsync_responseOptions_initializer;
+    MQTTAsync_message pubmsg = MQTTAsync_message_initializer;
+    int rc;
+
+
+    opts.onSuccess = onSend;
+    opts.context = this;
+
+    QJsonDocument doc;
+    doc.setObject(msg);
+    QByteArray arr = doc.toJson();
+
+    pubmsg.payload = reinterpret_cast<void*>(arr.data());
+    pubmsg.payloadlen = arr.size();
+    pubmsg.qos = QOS;
+    pubmsg.retained = 0;
+
+
+    if ((rc = MQTTAsync_sendMessage(_client, TOPIC, &pubmsg, &opts)) != MQTTASYNC_SUCCESS)
+    {
+       qDebug() << "Failed to start sendMessage, return code " << rc;
+    }
+}
+
+void MQTT::waitOnConnected()
+{
+    while(!_connected);
+}
+
+MQTT::~MQTT()
+{
+    disconnect();
+    MQTTAsync_destroy(&_client);
+}
+
+void MQTT::disconnect()
+{
+    MQTTAsync_disconnectOptions opts = MQTTAsync_disconnectOptions_initializer;
+    int rc;
+
+    opts.onSuccess = onDisconnect;
+    opts.context =  this;
+
+    if ((rc = MQTTAsync_disconnect(_client, &opts)) != MQTTASYNC_SUCCESS)
+    {
+        qDebug() << "Failed to start sendMessage, return code" << rc;
+    }
 }
