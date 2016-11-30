@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Web </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
+  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script type="text/javascript" src="mqttws31.js"></script>
+</head>
+<body>
+
+<header>
+ <ul class="w3-navbar">
+  <li><a href="javascript:void(0)" onclick="openMenuItem('Configuration')">Configuration</a></li>
+  <li><a href="javascript:void(0)" onclick="openMenuItem('Measure')">Measure</a></li>
+</ul>
+
+</header>
+
+<div id="Configuration" class="menuItem">
+  <div class="w3-container w3-teal">
+  <h2>Configuration</h2>
+  </div>
+  <div class="w3-panel">
+  <input type="checkbox" id="scanCB" /> Scan
+  
+  <p>Gefundene BLE Sensoren:<p>
+  <span id="message"></span>
+ 
+   <ul class="w3-ul w3-card-4 w3-margin-top" id="ScanList">
+  <li class="w3-padding-16" >
+    <span class="w3-xlarge">Device Name 1</span><br>
+    <span>Disconnected</span>
+  </li>
+  <li class="w3-padding-16" >
+    <span class="w3-xlarge">Device Name 2</span><br>
+    <span>Disconnected</span>
+  </li>
+</ul>
+  
+  </div>
+</div>
+
+<div id="Measure" class="menuItem">
+  <div class="w3-container w3-teal">
+  <h2>Measure</h2>
+  </div>
+  <p>Paris is the capital of France.</p>
+</div>
+
+<script type="text/javascript">
+
+/*-----------------------------------------------------------------------------------------------------------------------*/
+/* Website functions */
+/*-----------------------------------------------------------------------------------------------------------------------*/
+
+openMenuItem("Configuration");
+
+function openMenuItem(Item) {
+  $(".menuItem").hide();
+  $("#"+Item).show(); 
+}
+
+$( "#ScanList li" ).click(function() {
+  $( "#ScanList li").not(this).removeClass("w3-green");
+  $( this ).toggleClass( "w3-green" );
+});
+
+/*-----------------------------------------------------------------------------------------------------------------------*/
+/* Data Communication */
+/*-----------------------------------------------------------------------------------------------------------------------*/
+
+ // Parameters
+        var hostname = '147.87.98.17';
+        var port = 9001;
+
+        // Create a client instance
+        var client = new Paho.MQTT.Client(hostname, port, '/mqtt', "clientId");
+
+        // Set callback handlers
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        // Connect the client
+        client.connect({
+            userName: "gruppe_11",
+            password: "P8G42XEe",
+            onSuccess: onConnect,
+            onFailure: onConnectionFailure
+        });
+
+        // Called when the client connects
+        function onConnect() {
+            // Once a connection has been made, make a subscription and send a message.
+            console.log("onConnect");
+            client.subscribe("EmbSy/gruppe_11/#");
+        }
+
+        // Called when the client could not connect
+        function onConnectionFailure() {
+            console.log("onConnectionFailure");
+        }
+
+        // Called when the client loses its connection
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+            }
+        }
+
+        // Called when a message arrives
+        function onMessageArrived(message) {
+            var obj = JSON.parse(message.payloadString);
+            console.log("Message arrived: topic=" + message.destinationName + ", message=",obj);
+			var span = document.getElementById('message');
+			span.textContent= "topic:	" + message.destinationName + "		message:	" + message.payloadString;
+        }
+
+        function send() {
+            if (!client) {
+                return;
+            }
+            var message = new Paho.MQTT.Message("Hello");
+            message.destinationName = "test/world";
+            client.send(message);
+        }
+
+</script>
+</body>
+</html>
+
+
+
+
