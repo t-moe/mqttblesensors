@@ -10,7 +10,7 @@ class MQTT : public QObject
     Q_OBJECT
 public:
     explicit MQTT(QObject *parent = 0);
-    void sendMesage(const QJsonObject& msg);
+    void sendMesage(const QJsonObject& msg, bool persist=false);
     void waitOnConnected();
     ~MQTT();
 

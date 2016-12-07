@@ -146,7 +146,7 @@ MQTT::MQTT(QObject *parent) : QObject(parent), _connOpts(MQTTAsync_connectOption
 
 }
 
-void MQTT::sendMesage(const QJsonObject &msg)
+void MQTT::sendMesage(const QJsonObject &msg,  bool persist)
 {
     MQTTAsync_responseOptions opts = MQTTAsync_responseOptions_initializer;
     MQTTAsync_message pubmsg = MQTTAsync_message_initializer;
@@ -163,7 +163,7 @@ void MQTT::sendMesage(const QJsonObject &msg)
     pubmsg.payload = reinterpret_cast<void*>(arr.data());
     pubmsg.payloadlen = arr.size();
     pubmsg.qos = QOS;
-    pubmsg.retained = 0;
+    pubmsg.retained = persist;
 
 
     qDebug() << "MQQT sending" << msg;
