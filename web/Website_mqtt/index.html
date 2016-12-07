@@ -44,16 +44,18 @@
   </div>
   <div class="w3-panel">
   <div class="w3-panel w3-light-grey">
-  <p>Temperature:</p>
+  <p>Temperature</p>
+  <div id="tempChart" style="width: 700px; height: 350px"></div><br>
   </div>
   
   <div class="w3-panel w3-light-grey">
   <p>Acceleration</p>
-   <div id="accelChart" style="width: 900px; height: 500px"></div>
+   <div id="accelChart" style="width: 700px; height: 350px"></div><br>
   </div>
   
   <div class="w3-panel w3-light-grey">
   <p>Gyroscope</p>
+  <div id="gyroChart" style="width: 700px; height: 350px"></div><br>
   </div>
 
 
@@ -63,11 +65,14 @@
 /* Website functions */
 /*-----------------------------------------------------------------------------------------------------------------------*/
 
-openMenuItem("Measure");
+openMenuItem("Configuration");
 
 function openMenuItem(Item) {
   $(".menuItem").hide();
   $("#"+Item).show(); 
+  if (Item == "Measure") {
+  	drawAllCharts();
+  }
 }
 
 /* Scan List */
@@ -225,11 +230,20 @@ $( "#scanCB" ).change(function() {
 				}
 			}
 		}
+		
+		
+		
 		/* Google Chart */
 		google.charts.load('current', {packages: ['line']});
-        google.charts.setOnLoadCallback(drawChart);
 		
-		function drawChart() {
+		function drawAllCharts(){
+			drawChartAccel();
+			drawChartGyro();
+			drawChartTemp();
+		}
+		/* Acceleration Chart */
+		
+		function drawChartAccel() {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'time');
             data.addColumn('number', 'X');
@@ -255,15 +269,90 @@ $( "#scanCB" ).change(function() {
 
             var options = {
                 chart: {
-                    title: 'Chart Example'
+                    title: 'Sensor Data'
                 },
-                width: 900,
-                height: 500
+                width: 700,
+                height: 350
             };
 
             var chart = new google.charts.Line($("#accelChart")[0]);
             chart.draw(data, options);
         }
+		
+		/* Gyroscope Chart */
+		
+		function drawChartGyro() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'time');
+            data.addColumn('number', 'X');
+            data.addColumn('number', 'Y');
+            data.addColumn('number', 'Z');
+
+            data.addRows([
+                ['', 37.8, 80.8, 41.8],
+                ['', 30.9, 69.5, 32.4],
+                ['', 25.4,   57, 25.7],
+                ['', 11.7, 18.8, 10.5],
+                ['', 11.9, 17.6, 10.4],
+                ['',  8.8, 13.6,  7.7],
+                ['',  7.6, 12.3,  9.6],
+                ['', 12.3, 29.2, 10.6],
+                ['', 16.9, 42.9, 14.8],
+                ['', 12.8, 30.9, 11.6],
+                ['',  5.3,  7.9,  4.7],
+                ['',  6.6,  8.4,  5.2],
+                ['',  4.8,  6.3,  3.6],
+                ['',  4.2,  6.2,  3.4]
+            ]);
+
+            var options = {
+                chart: {
+                    title: 'Sensor Data'
+                },
+                width: 700,
+                height: 350
+            };
+
+            var chart = new google.charts.Line($("#gyroChart")[0]);
+            chart.draw(data, options);
+        }
+		
+		/* Temperature Chart */
+		
+		function drawChartTemp() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'time');
+            data.addColumn('number', '°C');
+           
+            data.addRows([
+                ['', 37.8],
+                ['', 30.9],
+                ['', 25.4],
+                ['', 11.7],
+                ['', 11.9],
+                ['',  8.8],
+                ['',  7.6],
+                ['', 12.3],
+                ['', 16.9],
+                ['', 12.8],
+                ['',  5.3],
+                ['',  6.6],
+                ['',  4.8],
+                ['',  4.2]
+            ]);
+
+            var options = {
+                chart: {
+                    title: 'Sensor Data'
+                },
+                width: 700,
+                height: 350
+            };
+
+            var chart = new google.charts.Line($("#tempChart")[0]);
+            chart.draw(data, options);
+        }
+		
 
 </script>
 </body>
