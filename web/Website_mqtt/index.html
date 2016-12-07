@@ -80,20 +80,20 @@ function openMenuItem(Item) {
 $( "#ScanList li" ).click(function() {
   $( "#ScanList li").not(this).removeClass("w3-orange w3-green");
   
-  if( $( this ).hasClass("w3-green")) {
+  if( $( this ).hasClass("w3-green") || $(this).hasClass("w3-orange")) {
   	// disconnect
 	var obj = {
 		disconnect: $(this).data("Adress")
 	};
 	send(obj);
-	$( this ).removeClass( "w3-green" );
+	$( this ).removeClass( "w3-green w3-orange" );
   } else {
   	//connect
 	var obj = {
 		connect: $(this).data("Adress")
 	};
 	send(obj);
-	$( this ).addClass( "w3-orange" );
+	$( this ).addClass( "w3-orange" ).find("span:eq(1)").text("Connecting");
 	}
 });
 
@@ -222,11 +222,12 @@ $( "#scanCB" ).change(function() {
 		
 		function statusChange(status) {
 			$( "#scanCB" ).prop("checked", status.scan);
-			$( "#ScanList li" ).removeClass("w3-green w3-orange");
+			$( "#ScanList li" ).removeClass("w3-green w3-orange").find("span:eq(1)").text("Disconnected");
 			for (var i = 0; i < status.devices.length; i++ ) {
 				var element = findListElement(status.devices[i]);
 				if (element != false) {
 					element.addClass("w3-green");
+                    element.find("span:eq(1)").text("Connected");
 				}
 			}
 		}
