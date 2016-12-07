@@ -18,8 +18,8 @@ public:
 signals:
 
 private slots:
-    void brokerMessageReceived(QJsonObject obj);
-    void hubMessageReceived(QJsonObject obj);
+    void brokerMessageReceived(const QJsonObject& obj);
+    void hubMessageReceived(const QJsonObject& obj);
 
 private:
     MQTT& _broker;
@@ -42,6 +42,9 @@ private:
     void hubGyroConfigured(const QString& address);
     void hubTempConfigured(const QString& address);
     void hubDeviceDisconnected(const QString& address);
+    void hubGyroData(const QString& adress, const QJsonObject& data);
+    void hubTemperatureData(const QString& adress, const QJsonObject& data);
+    void hubMeasureStopped(const QString& address);
 
     void brokerCmdScan(bool scan);
     void brokerCmdConnect(const QString& address);

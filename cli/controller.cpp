@@ -10,15 +10,15 @@ Controller::Controller(MQTT& broker, SensorHub& hub) :
 {
     connect(&_broker,&MQTT::messageReceived,this, &Controller::brokerMessageReceived);
     connect(&_hub,&SensorHub::eventReceived,this, &Controller::hubMessageReceived);
-
+    brokerResendStatus();
 }
 
-void Controller::brokerMessageReceived(QJsonObject obj)
+void Controller::brokerMessageReceived(const QJsonObject &obj)
 {
    if(obj["scan"].isBool()) {
         bool shouldScan = obj["scan"].toBool();
         brokerCmdScan(shouldScan);
-   } if(obj["connect"].isString()) {
+   } else if(obj["connect"].isString()) {
         QString address = obj["connect"].toString();
         brokerCmdConnect(address);
    } else if(obj["disconnect"].isString()) {
@@ -30,7 +30,7 @@ void Controller::brokerMessageReceived(QJsonObject obj)
 
 }
 
-void Controller::hubMessageReceived(QJsonObject obj)
+void Controller::hubMessageReceived(const QJsonObject &obj)
 {
     QString type = obj["event"].toString();
     if(type=="DeviceDiscovered") {
@@ -48,6 +48,17 @@ void Controller::hubMessageReceived(QJsonObject obj)
     } else if(type=="TempConfigured") {
         QString address = obj["device"].toString();
         hubTempConfigured(address);
+    } else if(type=="MeasurementStopped") {
+        QString address = obj["device"].toString();
+        hubMeasureStopped(address);
+    } else if(type=="GyroData"){
+        QString address = obj["device"].toString();
+        QJsonObject data = obj["data"].toObject();
+        hubGyroData(address,data);
+    } else if(type=="Temperature"){
+        QString address = obj["device"].toString();
+        QJsonObject data = obj["data"].toObject();
+        hubTemperatureData(address,data);
     } else {
         qDebug() << "Unknown event type" << type;
     }
@@ -135,6 +146,49 @@ void Controller::hubDeviceDisconnected(const QString &address)
     }
 }
 
+void Controller::hubGyroData(const QString& address,const QJsonObject &data)
+{
+    if(_connectedDevices.contains(address)) {
+        QJsonObject raw;
+        raw["x"] = data["x"];
+        raw["y"] = data["y"];
+        raw["z"] = data["z"];
+
+        QJsonObject dat;
+        dat["device"] = address;
+        dat["type"] = "gyro";
+        dat["raw"] = raw;
+
+        QJsonObject msg;
+        msg["data"] = dat;
+        _broker.sendMesage(msg);
+    }
+}
+
+void Controller::hubTemperatureData(const QString &address, const QJsonObject &data)
+{
+    if(_connectedDevices.contains(address)) {
+        QJsonObject dat;
+        dat["device"] = address;
+        dat["type"] = "temperature";
+        dat["raw"] = data["value"];
+
+        QJsonObject msg;
+        msg["data"] = dat;
+        _broker.sendMesage(msg);
+    }
+}
+
+void Controller::hubMeasureStopped(const QString &address)
+{
+    if(_connectedDevices.contains(address)) {
+        QJsonObject msg;
+        msg["command"] = "Disconnect";
+        msg["device"] = address;
+        _hub.send(msg);
+    }
+}
+
 
 
 void Controller::brokerCmdScan(bool shouldScan)
@@ -172,9 +226,13 @@ void Controller::brokerCmdDisconnect(const QString &address)
 {
     if(_connectedDevices.contains(address)) {
         QJsonObject msg;
-        msg["command"] = "Disconnect";
+        msg["command"] = "StopMeasurement";
         msg["device"] = address;
         _hub.send(msg);
+
+        //Temporary to fix
+        //TODO: remove?
+        hubDeviceDisconnected(address);
     }
 }
 

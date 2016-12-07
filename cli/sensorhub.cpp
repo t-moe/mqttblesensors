@@ -17,14 +17,6 @@ SensorHub::SensorHub(QObject *parent) : QObject(parent)
     _socket.connectToServer("/tmp/sensor-hub.socket");
     _socket.waitForConnected();
     qDebug() << "connected";
-
-
-    /*QJsonObject obj;
-    obj["device"] = "";
-    obj["command"] = "StartBleScan";
-
-    send(obj);*/
-
 }
 
 void SensorHub::send(const QJsonObject& obj)
@@ -50,15 +42,17 @@ void SensorHub::dataReady()
         QString err;
         int l = SensorHub::findEndOfJson(str, &err);
 
+
         if (l > 0) { //json object found
             QString m = str.left(l);
-            _unparsedBytes.remove(0, l);
+            QByteArray r = m.toUtf8();
+            _unparsedBytes.remove(0, r.length());
 
             QJsonParseError scanErr;
-            QJsonDocument doc = QJsonDocument::fromJson(m.toLatin1(),&scanErr);
+            QJsonDocument doc = QJsonDocument::fromJson(r,&scanErr);
             if(scanErr.error!=QJsonParseError::NoError) {
                 qDebug() << scanErr.errorString();
-                qDebug() << QString(m);
+                qDebug() << QString(r);
             }
 
             QJsonObject obj = doc.object();
@@ -99,13 +93,22 @@ int SensorHub::findEndOfJson(QString inp, QString* error)
     QList<bool> bracketStack; //a value of true means=open curly braket, false = open normal braket
     bool inStringLiteral = false;
     bool firstChar = true;
+    bool isEscaped = false;
     QChar quoteChar;
 
     for (int i = 0; i < inp.length(); i++) { //foreach char in string
         QChar c = inp.at(i);
 
         if (inStringLiteral) { //currently in a string literal: ignore everything expected closing quote
-            if (c != quoteChar || (i > 0 && inp.at(i - 1) == '\\')) { //not a unespaced, closing double qoute
+            if (isEscaped) {
+                isEscaped = false;
+                continue;
+            } else if (c == '\\') {
+                isEscaped = true;
+                continue;
+            }
+
+            if (c != quoteChar) { //not a unespaced, closing double qoute
                 continue;
             }
 
