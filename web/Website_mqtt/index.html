@@ -159,6 +159,9 @@ $( "#scanCB" ).change(function() {
 			else if ("status" in obj) {
 				statusChange(obj.status);
 			}
+			else if("data" in obj){
+				dataArrived(obj.data); 
+			}
 			else {
 				console.log("no devices available");
 			}
@@ -232,6 +235,28 @@ $( "#scanCB" ).change(function() {
 			}
 		}
 		
+		function dataArrived(data) { 
+			if ( $("#Measure").is(":visible")){
+				switch (data.type) {
+					case "temperature":{
+						console.log(data.raw);
+						$("#tempChart").data("array").addRows([
+							['', data.raw]
+						]);
+						$("#tempChart").data("chart").draw($("#tempChart").data("array"), $("#tempChart").data("options"));
+					}
+					break;
+					case "accelerate":{
+						
+					}
+					break;
+					case "gyro":{
+						
+					}
+					break;
+				}
+			}
+		}
 		
 		
 		/* Google Chart */
@@ -349,9 +374,14 @@ $( "#scanCB" ).change(function() {
                 width: 700,
                 height: 350
             };
-
+			
+			$("#tempChart").data("options", options);
+			$("#tempChart").data("array", data);
             var chart = new google.charts.Line($("#tempChart")[0]);
             chart.draw(data, options);
+			$("#tempChart").data("chart", chart);
+			
+			
         }
 		
 
