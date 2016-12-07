@@ -18,6 +18,7 @@ private:
     void disconnect();
 
     MQTTAsync _client;
+    MQTTAsync_connectOptions _connOpts;
     bool _connected;
 
     static void connlost(void *context, char *cause);

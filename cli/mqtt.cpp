@@ -31,17 +31,12 @@
 void MQTT::connlost(void *context, char *cause)
 {
     MQTT* inst = static_cast<MQTT*>(context);
-
-    MQTTAsync_connectOptions conn_opts = MQTTAsync_connectOptions_initializer;
     int rc;
 
     qDebug() << "Connection lost. cause " << cause;
 
     qDebug() << "Reconnecting";
-
-    conn_opts.keepAliveInterval = 20;
-    conn_opts.cleansession = 1;
-    if ((rc = MQTTAsync_connect(inst->_client, &conn_opts)) != MQTTASYNC_SUCCESS)
+    if ((rc = MQTTAsync_connect(inst->_client, &inst->_connOpts)) != MQTTASYNC_SUCCESS)
     {
         qDebug() << "Failed to start connect, return code " << rc;
         inst->_connected = false;
@@ -97,7 +92,7 @@ int MQTT::msgarrvd(void *context, char *topicName, int topicLen, MQTTAsync_messa
     MQTT* inst = static_cast<MQTT*>(context);
 
 
-    qDebug()  << "Message arrived. Topic" << topicName;
+    //qDebug()  << "Message arrived. Topic" << topicName;
 
     char* content = static_cast<char*>(message->payload);
     QByteArray arr = QByteArray::fromRawData(content,message->payloadlen);
@@ -122,25 +117,27 @@ int MQTT::msgarrvd(void *context, char *topicName, int topicLen, MQTTAsync_messa
 
 
 
-MQTT::MQTT(QObject *parent) : QObject(parent)
+MQTT::MQTT(QObject *parent) : QObject(parent), _connOpts(MQTTAsync_connectOptions_initializer)
 {
     _connected = false;
 
-    MQTTAsync_connectOptions conn_opts = MQTTAsync_connectOptions_initializer;
+    _connOpts.username = USERNAME;
+    _connOpts.password = PASSWORD;
+    _connOpts.keepAliveInterval = 20;
+    _connOpts.cleansession = 1;
+    _connOpts.onSuccess = onConnect;
+    _connOpts.onFailure = onConnectFailure;
+    _connOpts.context = this;
+
+
     int rc;
 
     MQTTAsync_create(&_client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
 
     MQTTAsync_setCallbacks(_client, this, connlost, msgarrvd, NULL);
 
-    conn_opts.username = USERNAME;
-    conn_opts.password = PASSWORD;
-    conn_opts.keepAliveInterval = 20;
-    conn_opts.cleansession = 1;
-    conn_opts.onSuccess = onConnect;
-    conn_opts.onFailure = onConnectFailure;
-    conn_opts.context = this;
-    if ((rc = MQTTAsync_connect(_client, &conn_opts)) != MQTTASYNC_SUCCESS)
+
+    if ((rc = MQTTAsync_connect(_client, &_connOpts)) != MQTTASYNC_SUCCESS)
     {
         qDebug() << "Failed to start connect, return code" << rc;
         return;
@@ -168,6 +165,8 @@ void MQTT::sendMesage(const QJsonObject &msg)
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
 
+
+    qDebug() << "MQQT sending" << msg;
 
     if ((rc = MQTTAsync_sendMessage(_client, TOPIC_SEND, &pubmsg, &opts)) != MQTTASYNC_SUCCESS)
     {

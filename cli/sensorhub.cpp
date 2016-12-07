@@ -19,11 +19,11 @@ SensorHub::SensorHub(QObject *parent) : QObject(parent)
     qDebug() << "connected";
 
 
-    QJsonObject obj;
+    /*QJsonObject obj;
     obj["device"] = "";
     obj["command"] = "StartBleScan";
 
-    send(obj);
+    send(obj);*/
 
 }
 
@@ -32,6 +32,8 @@ void SensorHub::send(const QJsonObject& obj)
     QJsonDocument doc;
     doc.setObject(obj);
     QByteArray arr = doc.toJson();
+
+    qDebug() << "Sensorhub Sent" << obj;
 
     _socket.write(arr);
     _socket.waitForBytesWritten();
@@ -60,13 +62,15 @@ void SensorHub::dataReady()
             }
 
             QJsonObject obj = doc.object();
+            qDebug() << "Sensorhub Received" << obj;
+
             emit eventReceived(obj);
 
             /*if(obj["event"].toString() == "DeviceDiscovered") {
                 qDebug() << obj["data"].toObject()["name"].toString();
             }*/
 
-            qDebug() << "Sensorhub Received" << obj;
+
 
         } else {
             if (l < 0) { //fatal parser error

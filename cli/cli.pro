@@ -11,10 +11,12 @@ TEMPLATE = app
 
 SOURCES +=  main.cpp \
             sensorhub.cpp \
-    mqtt.cpp
+            mqtt.cpp \
+            controller.cpp
 
 HEADERS +=  sensorhub.h \
-    mqtt.h
+            mqtt.h \
+            controller.h
 
 target.path = /home/pi
 INSTALLS+= target

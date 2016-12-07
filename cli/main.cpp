@@ -2,6 +2,8 @@
 #include <QDebug>
 #include "sensorhub.h"
 #include "mqtt.h"
+#include "controller.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -14,15 +16,17 @@ int main(int argc, char *argv[])
     MQTT mqtt;
     mqtt.waitOnConnected();
 
-    QJsonObject tst;
+    Controller cont(mqtt,hub);
+
+    /*QJsonObject tst;
     tst["a"] = 3;
     tst["b"]= "hallo";
 
     mqtt.sendMesage(tst);
 
 
-    tst["c"] = 13;
-    mqtt.sendMesage(tst);
+    tst["devices"] = 13;
+    mqtt.sendMesage(tst);*/
 
 
     return a.exec();
