@@ -7,7 +7,8 @@
 #define ADDRESS     "tcp://iot.i3s.bfh.ch:1883"
 
 #define CLIENTID    "ExampleClientPub"
-#define TOPIC       "EmbSy/gruppe_11/aui"
+#define TOPIC_SEND      "EmbSy/gruppe_11/web"
+#define TOPIC_RECV      "EmbSy/gruppe_11/cli"
 #define QOS         1
 #define TIMEOUT     10000L
 
@@ -76,11 +77,47 @@ void MQTT::onConnectFailure(void* context, MQTTAsync_failureData* response)
 void MQTT::onConnect(void* context, MQTTAsync_successData* response)
 {
     MQTT* inst = static_cast<MQTT*>(context);
+    MQTTAsync_responseOptions opts = MQTTAsync_responseOptions_initializer;
 
     qDebug() <<"Successful connection";
+
+
     inst->_connected = true;
+    int rc;
+
+    if ((rc = MQTTAsync_subscribe(inst->_client, TOPIC_RECV, QOS, &opts)) != MQTTASYNC_SUCCESS)
+    {
+        qDebug() << "Failed to start subscribe, return code" << rc;
+    }
 }
 
+
+int MQTT::msgarrvd(void *context, char *topicName, int topicLen, MQTTAsync_message *message)
+{
+    MQTT* inst = static_cast<MQTT*>(context);
+
+
+    qDebug()  << "Message arrived. Topic" << topicName;
+
+    char* content = static_cast<char*>(message->payload);
+    QByteArray arr = QByteArray::fromRawData(content,message->payloadlen);
+
+    QJsonParseError scanErr;
+    QJsonDocument doc = QJsonDocument::fromJson(arr,&scanErr);
+    if(scanErr.error!=QJsonParseError::NoError) {
+        qDebug() << scanErr.errorString();
+        qDebug() << QString(arr);
+    } else {
+        QJsonObject obj = doc.object();
+        qDebug() << "MQQT received" << obj;
+        emit inst->messageReceived(obj);
+    }
+
+    MQTTAsync_freeMessage(&message);
+    MQTTAsync_free(topicName);
+
+    return 1;
+}
 
 
 
@@ -94,7 +131,7 @@ MQTT::MQTT(QObject *parent) : QObject(parent)
 
     MQTTAsync_create(&_client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
 
-    MQTTAsync_setCallbacks(_client, NULL, connlost, NULL, NULL);
+    MQTTAsync_setCallbacks(_client, this, connlost, msgarrvd, NULL);
 
     conn_opts.username = USERNAME;
     conn_opts.password = PASSWORD;
@@ -132,7 +169,7 @@ void MQTT::sendMesage(const QJsonObject &msg)
     pubmsg.retained = 0;
 
 
-    if ((rc = MQTTAsync_sendMessage(_client, TOPIC, &pubmsg, &opts)) != MQTTASYNC_SUCCESS)
+    if ((rc = MQTTAsync_sendMessage(_client, TOPIC_SEND, &pubmsg, &opts)) != MQTTASYNC_SUCCESS)
     {
        qDebug() << "Failed to start sendMessage, return code " << rc;
     }

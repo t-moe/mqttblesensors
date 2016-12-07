@@ -52,7 +52,7 @@ void SensorHub::dataReady()
             QString m = str.left(l);
             _unparsedBytes.remove(0, l);
 
-             QJsonParseError scanErr;
+            QJsonParseError scanErr;
             QJsonDocument doc = QJsonDocument::fromJson(m.toLatin1(),&scanErr);
             if(scanErr.error!=QJsonParseError::NoError) {
                 qDebug() << scanErr.errorString();
@@ -62,11 +62,11 @@ void SensorHub::dataReady()
             QJsonObject obj = doc.object();
             emit eventReceived(obj);
 
-            if(obj["event"].toString() == "DeviceDiscovered") {
+            /*if(obj["event"].toString() == "DeviceDiscovered") {
                 qDebug() << obj["data"].toObject()["name"].toString();
-            }
+            }*/
 
-            qDebug() << obj;
+            qDebug() << "Sensorhub Received" << obj;
 
         } else {
             if (l < 0) { //fatal parser error

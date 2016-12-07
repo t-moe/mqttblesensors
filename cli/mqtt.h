@@ -25,8 +25,9 @@ private:
     static void onSend(void* context, MQTTAsync_successData* response);
     static void onConnectFailure(void* context, MQTTAsync_failureData* response);
     static void onConnect(void* context, MQTTAsync_successData* response);
-
+    static int msgarrvd(void *context, char *topicName, int topicLen, MQTTAsync_message *message);
 signals:
+    void messageReceived(QJsonObject msg);
 
 public slots:
 };
