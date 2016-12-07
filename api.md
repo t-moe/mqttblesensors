@@ -74,4 +74,39 @@ The server will respond with:
 
 ## 3. Measure
 
-*TODO*
+The server will send data:
+
+```javascript
+{"data": {
+    "device": "12:1F:13:2A:12", 
+    "type": "temperature"
+    "raw": 32.0
+  }
+}
+```
+
+```javascript
+{"data": {
+    "device": "12:1F:13:2A:12", 
+    "type": "accelerate"
+    "raw": {
+	"x": -558,
+	"y": -4917, 
+     	"z": 15626 
+  	}
+    }
+}
+```
+
+```javascript
+{"data": {
+    "device": "12:1F:13:2A:12", 
+    "type": "gyro"
+    "raw": {
+	"x": -558,
+	"y": -4917, 
+     	"z": 15626 
+  	}
+    }
+}
+```
