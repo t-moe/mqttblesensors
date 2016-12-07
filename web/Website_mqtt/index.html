@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My Web </title>
+  <title>BLE Sensor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
   <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -64,6 +64,8 @@ function openMenuItem(Item) {
 $( "#ScanList li" ).click(function() {
   $( "#ScanList li").not(this).removeClass("w3-green");
   $( this ).toggleClass( "w3-green" );
+  var obj = {a:"Hello",b:3};
+  send(obj);
 });
 
 /*-----------------------------------------------------------------------------------------------------------------------*/
@@ -75,7 +77,7 @@ $( "#ScanList li" ).click(function() {
         var port = 9001;
 
         // Create a client instance
-        var client = new Paho.MQTT.Client(hostname, port, '/mqtt', "clientId");
+        var client = new Paho.MQTT.Client(hostname, port, '/mqtt', "clientId"+Math.random());
 
         // Set callback handlers
         client.onConnectionLost = onConnectionLost;
@@ -93,7 +95,7 @@ $( "#ScanList li" ).click(function() {
         function onConnect() {
             // Once a connection has been made, make a subscription and send a message.
             console.log("onConnect");
-            client.subscribe("EmbSy/gruppe_11/#");
+            client.subscribe("EmbSy/gruppe_11/web");
         }
 
         // Called when the client could not connect
@@ -116,12 +118,13 @@ $( "#ScanList li" ).click(function() {
 			span.textContent= "topic:	" + message.destinationName + "		message:	" + message.payloadString;
         }
 
-        function send() {
+        function send(obj) {
             if (!client) {
                 return;
             }
-            var message = new Paho.MQTT.Message("Hello");
-            message.destinationName = "test/world";
+			
+            var message = new Paho.MQTT.Message(JSON.stringify(obj));
+            message.destinationName = "EmbSy/gruppe_11/cli";
             client.send(message);
         }
 
