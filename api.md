@@ -12,8 +12,8 @@ Status object sent from rasp -> client on a regular basis
        "23:23:E8:C2:9A"
     ],
     "devices" : [ /* The devices in range. empty if scan=false */
-       "AF:23:E8:13:2A:12",
-       "98:23:23:E8:C2:9A"
+      {"addr": "12:1F:13:2A:12", "desc": "Johns Txw 51 Sensor" },
+      {"addr": "2A:12:12:1F:13", "desc": "Texas Instrument 78C8 Temperature Sensor" }
     ]
   }
 }
@@ -67,11 +67,11 @@ The server will send data:
     "device": "12:1F:13:2A:12",
     "type": "accelerate"
     "raw": {
-       "x": -558,
-       "y": -4917,
-       "z": 15626
+       "x": -0.11,
+       "y": -0.1,
+       "z": 1.01
     }
-}
+  }
 }
 ```
 
@@ -80,9 +80,9 @@ The server will send data:
     "device": "12:1F:13:2A:12",
     "type": "gyro"
     "raw": {
-        "x": -558,
-        "y": -4917,
-        "z": 15626
+        "x": -55.4,
+        "y": -49.17,
+        "z": 156.26
     }
   }
 }
