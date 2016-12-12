@@ -4,6 +4,8 @@
 #include "sensorhub.h"
 #include <functional>
 
+#define DATA_PER_SEC 4
+
 Controller::Controller(MQTT& broker, SensorHub& hub) :
     _broker(broker),
     _hub(hub),
@@ -142,6 +144,12 @@ void Controller::hubDeviceDisconnected(const QString &address, const QJsonObject
 void Controller::hubGyroData(const QString& address,const QJsonObject &data)
 {
     if(_connectedDevices.contains(address)) {
+        if(_lastGyroData.isValid() && ((QDateTime::currentDateTime().toMSecsSinceEpoch() - _lastGyroData.toMSecsSinceEpoch()) < 1000/DATA_PER_SEC)) {
+            return; //ignore value
+        }
+        _lastGyroData = QDateTime::currentDateTime();
+
+
         QJsonObject raw;
         raw["x"] = data["x"];
         raw["y"] = data["y"];

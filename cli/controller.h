@@ -5,6 +5,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QHash>
+#include <QDateTime>
 
 class MQTT;
 class SensorHub;
@@ -34,6 +35,8 @@ private:
 
     QHash<QString,State> _connectedDevices;
     QJsonArray _connectedList;
+    QDateTime _lastGyroData;
+    QDateTime _lastAccelData;
 
 
 
