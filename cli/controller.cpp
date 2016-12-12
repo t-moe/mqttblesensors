@@ -109,7 +109,7 @@ void Controller::hubGyroConfigured(const QString &address, const QJsonObject&)
         QJsonObject data;
         data["on"] = true;
         data["fullscale"] = 4;
-        data["odr"] = 12.5;
+        data["odr"] = 50;
         msg["data"] = data;
 
         _hub.send(msg);
@@ -127,7 +127,7 @@ void Controller::hubAccelConfigured(const QString &address, const QJsonObject &)
 
         QJsonObject data;
         data["on"] = true;
-        data["odr"] = 1;
+        data["odr"] = DATA_PER_SEC;
         msg["data"] = data;
 
         _hub.send(msg);
@@ -171,10 +171,13 @@ void Controller::hubGyroData(const QString& adress,const QJsonObject &data)
         _lastGyroData = QDateTime::currentDateTime();
 
 
+
+        static const double factor = 17.5e-3;
+
         QJsonObject raw;
-        raw["x"] = data["x"];
-        raw["y"] = data["y"];
-        raw["z"] = data["z"];
+        raw["x"] = data["x"].toInt() *factor;
+        raw["y"] = data["y"].toInt() *factor;
+        raw["z"] = data["z"].toInt() *factor;
 
         QJsonObject dat;
         dat["device"] = adress;
@@ -196,10 +199,12 @@ void Controller::hubAccelData(const QString &adress, const QJsonObject &data)
         _lastAccelData = QDateTime::currentDateTime();
 
 
+        static const double factor = 0.122e-3;
+
         QJsonObject raw;
-        raw["x"] = data["x"];
-        raw["y"] = data["y"];
-        raw["z"] = data["z"];
+        raw["x"] = data["x"].toInt() *factor;
+        raw["y"] = data["y"].toInt() *factor;
+        raw["z"] = data["z"].toInt() *factor;
 
         QJsonObject dat;
         dat["device"] = adress;
