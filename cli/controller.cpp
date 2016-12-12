@@ -2,6 +2,7 @@
 
 #include "mqtt.h"
 #include "sensorhub.h"
+#include <functional>
 
 Controller::Controller(MQTT& broker, SensorHub& hub) :
     _broker(broker),
@@ -33,39 +34,32 @@ void Controller::brokerMessageReceived(const QJsonObject &obj)
 
 void Controller::hubMessageReceived(const QJsonObject &obj)
 {
+    const QMap<QString,void (Controller::*)(const QString&, const QJsonObject&)> callbacks = {
+        {"DeviceDiscovered",&Controller::hubDeviceDiscovered},
+        {"DeviceConnected",&Controller::hubDeviceConnected},
+        {"DeviceDisconnected",&Controller::hubDeviceDisconnected},
+        {"GyroConfigured",&Controller::hubGyroConfigured},
+        {"TempConfigured",&Controller::hubTempConfigured},
+        {"MeasurementStopped",&Controller::hubMeasureStopped},
+        {"GyroData",&Controller::hubGyroData},
+        {"Temperature",&Controller::hubTemperatureData}
+    };
+
+
     QString type = obj["event"].toString();
-    if(type=="DeviceDiscovered") {
-        QJsonObject device = obj["data"].toObject();
-        hubDeviceDiscovered(device);
-    } else if(type=="DeviceConnected") {
-        QString address = obj["device"].toString();
-        hubDeviceConnected(address);
-    } else if(type=="DeviceDisconnected") {
-        QString address = obj["device"].toString();
-        hubDeviceDisconnected(address);
-    } else if(type=="GyroConfigured") {
-        QString address = obj["device"].toString();
-        hubGyroConfigured(address);
-    } else if(type=="TempConfigured") {
-        QString address = obj["device"].toString();
-        hubTempConfigured(address);
-    } else if(type=="MeasurementStopped") {
-        QString address = obj["device"].toString();
-        hubMeasureStopped(address);
-    } else if(type=="GyroData"){
-        QString address = obj["device"].toString();
+
+    if(callbacks.contains(type)) { //Callback available for this event type
         QJsonObject data = obj["data"].toObject();
-        hubGyroData(address,data);
-    } else if(type=="Temperature"){
-        QString address = obj["device"].toString();
-        QJsonObject data = obj["data"].toObject();
-        hubTemperatureData(address,data);
+        QString adress = obj["device"].toString();
+
+        auto memfcn = callbacks[type]; //get member function out of callback map
+        (this->*memfcn)(adress,data); //Call member function on "this" instance
     } else {
         qDebug() << "Unknown event type" << type;
     }
 }
 
-void Controller::hubDeviceDiscovered(const QJsonObject &device)
+void Controller::hubDeviceDiscovered(const QString &, const QJsonObject &device)
 {
     if(_scanning) {
         QString addr = device["id"].toString();
@@ -82,7 +76,7 @@ void Controller::hubDeviceDiscovered(const QJsonObject &device)
     }
 }
 
-void Controller::hubDeviceConnected(const QString &address)
+void Controller::hubDeviceConnected(const QString &address, const QJsonObject&)
 {
     if(_connectedDevices.contains(address)) {
         _connectedDevices[address] = Controller::Connected;
@@ -100,7 +94,7 @@ void Controller::hubDeviceConnected(const QString &address)
     }
 }
 
-void Controller::hubGyroConfigured(const QString &address)
+void Controller::hubGyroConfigured(const QString &address, const QJsonObject&)
 {
     if(_connectedDevices.contains(address)) {
         _connectedDevices[address] = Controller::Configured1;
@@ -117,7 +111,7 @@ void Controller::hubGyroConfigured(const QString &address)
     }
 }
 
-void Controller::hubTempConfigured(const QString &address)
+void Controller::hubTempConfigured(const QString &address, const QJsonObject&)
 {
     if(_connectedDevices.contains(address)) {
         _connectedDevices[address] = Controller::Configured2;
@@ -132,7 +126,7 @@ void Controller::hubTempConfigured(const QString &address)
     }
 }
 
-void Controller::hubDeviceDisconnected(const QString &address)
+void Controller::hubDeviceDisconnected(const QString &address, const QJsonObject&)
 {
     if(_connectedDevices.contains(address)) {
         _connectedDevices.remove(address);
@@ -178,7 +172,7 @@ void Controller::hubTemperatureData(const QString &address, const QJsonObject &d
     }
 }
 
-void Controller::hubMeasureStopped(const QString &address)
+void Controller::hubMeasureStopped(const QString &address, const QJsonObject&)
 {
     if(_connectedDevices.contains(address)) {
         QJsonObject msg;
