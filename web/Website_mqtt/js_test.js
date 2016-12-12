@@ -37,11 +37,7 @@ function onConnectionLost(responseObject) {
 function onMessageArrived(message) {
     var obj = JSON.parse(message.payloadString);
     console.log("Message arrived: topic=" + message.destinationName + ", message=",obj);
-	if ("devices" in obj) {
-		devicesDetect(obj.devices);
-		console.log(obj.devices);
-	} 
-	else if ("status" in obj) {
+	if ("status" in obj) {
 		statusChange(obj.status);
 	}
 	else if("data" in obj){

@@ -33,15 +33,6 @@ To stop a scan:
 {"scan": false}
 ```
 
-The server will respond with the following periodically:
-```javascript
-{"devices": [ /* devices found in range */
-     {"addr": "12:1F:13:2A:12", "desc": "Johns Txw 51 Sensor" },
-     {"addr": "2A:12:12:1F:13", "desc": "Texas Instrument 78C8 Temperature Sensor" }
-  ]
-}
-```
-
 ## 2. Connect
 
 To connect to a device:
