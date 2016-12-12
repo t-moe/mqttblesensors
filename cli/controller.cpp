@@ -177,7 +177,7 @@ void Controller::hubGyroData(const QString& adress,const QJsonObject &data)
         raw["z"] = data["z"];
 
         QJsonObject dat;
-        dat["device"] = address;
+        dat["device"] = adress;
         dat["type"] = "gyro";
         dat["raw"] = raw;
 
@@ -202,7 +202,7 @@ void Controller::hubAccelData(const QString &adress, const QJsonObject &data)
         raw["z"] = data["z"];
 
         QJsonObject dat;
-        dat["device"] = address;
+        dat["device"] = adress;
         dat["type"] = "accelerate";
         dat["raw"] = raw;
 
