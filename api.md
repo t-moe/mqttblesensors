@@ -7,9 +7,13 @@ Status object sent from rasp -> client on a regular basis
 ```javascript
 {"status": {
     "scan": true, /* True if we're scanning for devices */
-    "devices": [ /* The connected devices addresses */
-       "12:1F:13:2A:12", 
+    "connected": [ /* The connected devices addresses */
+       "12:1F:13:2A:12",
        "23:23:E8:C2:9A"
+    ],
+    "devices" : [ /* The devices in range. empty if scan=false */
+       "AF:23:E8:13:2A:12",
+       "98:23:23:E8:C2:9A"
     ]
   }
 }
@@ -31,7 +35,7 @@ To stop a scan:
 
 The server will respond with the following periodically:
 ```javascript
-{"devices": [ /* devices found in range */ 
+{"devices": [ /* devices found in range */
      {"addr": "12:1F:13:2A:12", "desc": "Johns Txw 51 Sensor" },
      {"addr": "2A:12:12:1F:13", "desc": "Texas Instrument 78C8 Temperature Sensor" }
   ]
@@ -46,29 +50,11 @@ To connect to a device:
 {"connect": "12:1F:13:2A:12"}
 ```
 
-The server will respond with:
-
-```javascript
-{"connected": "12:1F:13:2A:12"}
-```
-
-or
-
-```javascript
-{"disconnected": "12:1F:13:2A:12", "err": "The device is no longer ...."}
-```
-
 
 To disconnect from a device:
 
 ```javascript
 {"disconnect": "12:1F:13:2A:12"}
-```
-
-The server will respond with:
-
-```javascript
-{"disconnected": "12:1F:13:2A:12"}
 ```
 
 
@@ -78,7 +64,7 @@ The server will send data:
 
 ```javascript
 {"data": {
-    "device": "12:1F:13:2A:12", 
+    "device": "12:1F:13:2A:12",
     "type": "temperature"
     "raw": 32.0
   }
@@ -87,26 +73,26 @@ The server will send data:
 
 ```javascript
 {"data": {
-    "device": "12:1F:13:2A:12", 
+    "device": "12:1F:13:2A:12",
     "type": "accelerate"
     "raw": {
-	"x": -558,
-	"y": -4917, 
-     	"z": 15626 
-  	}
+       "x": -558,
+       "y": -4917,
+       "z": 15626
     }
+}
 }
 ```
 
 ```javascript
 {"data": {
-    "device": "12:1F:13:2A:12", 
+    "device": "12:1F:13:2A:12",
     "type": "gyro"
     "raw": {
-	"x": -558,
-	"y": -4917, 
-     	"z": 15626 
-  	}
+        "x": -558,
+        "y": -4917,
+        "z": 15626
     }
+  }
 }
 ```

@@ -10,7 +10,8 @@ Controller::Controller(MQTT& broker, SensorHub& hub) :
 {
     connect(&_broker,&MQTT::messageReceived,this, &Controller::brokerMessageReceived);
     connect(&_hub,&SensorHub::eventReceived,this, &Controller::hubMessageReceived);
-    brokerResendStatus();
+
+    brokerResendStatus(); //to reset the previous persistent message
 }
 
 void Controller::brokerMessageReceived(const QJsonObject &obj)
@@ -76,9 +77,7 @@ void Controller::hubDeviceDiscovered(const QJsonObject &device)
             _scanAddresses.append(addr);
             _scanList.append(deviceObject);
 
-            QJsonObject msg;
-            msg["devices"] = _scanList;
-            _broker.sendMesage(msg);
+            brokerResendStatus(); //because the scan list was modified
         }
     }
 }
@@ -129,7 +128,7 @@ void Controller::hubTempConfigured(const QString &address)
         _hub.send(msg);
         _connectedList.append(address);
 
-        brokerResendStatus();
+        brokerResendStatus(); //because the device is now connected
     }
 }
 
@@ -142,7 +141,7 @@ void Controller::hubDeviceDisconnected(const QString &address)
                 _connectedList.removeAt(i);
             }
         }
-        brokerResendStatus();
+        brokerResendStatus(); //because the device is now disconnected
     }
 }
 
@@ -208,7 +207,7 @@ void Controller::brokerCmdScan(bool shouldScan)
     msg["command"] = (shouldScan)?"StartBleScan":"StopBleScan";
     _hub.send(msg);
 
-    brokerResendStatus();
+    brokerResendStatus(); //Because scan has changed it's value
 }
 
 void Controller::brokerCmdConnect(const QString &address)
@@ -227,12 +226,13 @@ void Controller::brokerCmdDisconnect(const QString &address)
     if(_connectedDevices.contains(address)) {
         QJsonObject msg;
         msg["command"] = "StopMeasurement";
+        //msg["command"] = "Disconnect";
         msg["device"] = address;
         _hub.send(msg);
 
         //Temporary to fix
         //TODO: remove?
-        hubDeviceDisconnected(address);
+        //hubDeviceDisconnected(address);
     }
 }
 
@@ -240,7 +240,8 @@ void Controller::brokerResendStatus()
 {
     QJsonObject status;
     status["scan"] = _scanning;
-    status["devices"] = _connectedList;
+    status["connected"] = _connectedList;
+    status["devices"] = _scanList;
     QJsonObject msg;
     msg["status"] = status;
     _broker.sendMesage(msg,true); //Persist message
