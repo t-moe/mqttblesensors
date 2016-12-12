@@ -41,9 +41,11 @@ void Controller::hubMessageReceived(const QJsonObject &obj)
         {"DeviceConnected",&Controller::hubDeviceConnected},
         {"DeviceDisconnected",&Controller::hubDeviceDisconnected},
         {"GyroConfigured",&Controller::hubGyroConfigured},
+        {"AccelConfigured",&Controller::hubAccelConfigured},
         {"TempConfigured",&Controller::hubTempConfigured},
         {"MeasurementStopped",&Controller::hubMeasureStopped},
         {"GyroData",&Controller::hubGyroData},
+        {"AccelData",&Controller::hubAccelData},
         {"Temperature",&Controller::hubTemperatureData}
     };
 
@@ -101,6 +103,25 @@ void Controller::hubGyroConfigured(const QString &address, const QJsonObject&)
     if(_connectedDevices.contains(address)) {
         _connectedDevices[address] = Controller::Configured1;
         QJsonObject msg;
+        msg["command"] = "ConfigAccel";
+        msg["device"] = address;
+
+        QJsonObject data;
+        data["on"] = true;
+        data["fullscale"] = 4;
+        data["odr"] = 12.5;
+        msg["data"] = data;
+
+        _hub.send(msg);
+    }
+}
+
+
+void Controller::hubAccelConfigured(const QString &address, const QJsonObject &)
+{
+    if(_connectedDevices.contains(address)) {
+        _connectedDevices[address] = Controller::Configured2;
+        QJsonObject msg;
         msg["command"] = "ConfigTemp";
         msg["device"] = address;
 
@@ -116,7 +137,7 @@ void Controller::hubGyroConfigured(const QString &address, const QJsonObject&)
 void Controller::hubTempConfigured(const QString &address, const QJsonObject&)
 {
     if(_connectedDevices.contains(address)) {
-        _connectedDevices[address] = Controller::Configured2;
+        _connectedDevices[address] = Controller::Configured3;
 
         QJsonObject msg;
         msg["command"] = "StartMeasurement";
@@ -141,9 +162,9 @@ void Controller::hubDeviceDisconnected(const QString &address, const QJsonObject
     }
 }
 
-void Controller::hubGyroData(const QString& address,const QJsonObject &data)
+void Controller::hubGyroData(const QString& adress,const QJsonObject &data)
 {
-    if(_connectedDevices.contains(address)) {
+    if(_connectedDevices.contains(adress)) {
         if(_lastGyroData.isValid() && ((QDateTime::currentDateTime().toMSecsSinceEpoch() - _lastGyroData.toMSecsSinceEpoch()) < 1000/DATA_PER_SEC)) {
             return; //ignore value
         }
@@ -158,6 +179,31 @@ void Controller::hubGyroData(const QString& address,const QJsonObject &data)
         QJsonObject dat;
         dat["device"] = address;
         dat["type"] = "gyro";
+        dat["raw"] = raw;
+
+        QJsonObject msg;
+        msg["data"] = dat;
+        _broker.sendMesage(msg);
+    }
+}
+
+void Controller::hubAccelData(const QString &adress, const QJsonObject &data)
+{
+    if(_connectedDevices.contains(adress)) {
+        if(_lastAccelData.isValid() && ((QDateTime::currentDateTime().toMSecsSinceEpoch() - _lastAccelData.toMSecsSinceEpoch()) < 1000/DATA_PER_SEC)) {
+            return; //ignore value
+        }
+        _lastAccelData = QDateTime::currentDateTime();
+
+
+        QJsonObject raw;
+        raw["x"] = data["x"];
+        raw["y"] = data["y"];
+        raw["z"] = data["z"];
+
+        QJsonObject dat;
+        dat["device"] = address;
+        dat["type"] = "accelerate";
         dat["raw"] = raw;
 
         QJsonObject msg;

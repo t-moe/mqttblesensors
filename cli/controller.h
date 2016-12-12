@@ -31,7 +31,7 @@ private:
     QJsonArray _scanList;
 
 
-    enum State{Connecting,Connected,Configured1,Configured2};
+    enum State{Connecting,Connected,Configured1,Configured2, Configured3};
 
     QHash<QString,State> _connectedDevices;
     QJsonArray _connectedList;
@@ -43,9 +43,11 @@ private:
     void hubDeviceDiscovered(const QString&, const QJsonObject& device);
     void hubDeviceConnected(const QString& address, const QJsonObject&);
     void hubGyroConfigured(const QString& address, const QJsonObject&);
+    void hubAccelConfigured(const QString& address, const QJsonObject&);
     void hubTempConfigured(const QString& address, const QJsonObject&);
     void hubDeviceDisconnected(const QString& address, const QJsonObject&);
     void hubGyroData(const QString& adress, const QJsonObject& data);
+    void hubAccelData(const QString& adress, const QJsonObject& data);
     void hubTemperatureData(const QString& adress, const QJsonObject& data);
     void hubMeasureStopped(const QString& address, const QJsonObject&);
 
