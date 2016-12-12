@@ -110,9 +110,10 @@ function findArrayElement(adress, array){
 
 function statusChange(status) {
 	$( "#scanCB" ).prop("checked", status.scan);
+	devicesDetect(obj.devices);
 	$( "#ScanList li" ).removeClass("w3-green w3-orange").find("span:eq(1)").text("Disconnected");
-	for (var i = 0; i < status.devices.length; i++ ) {
-		var element = findListElement(status.devices[i]);
+	for (var i = 0; i < status.connected.length; i++ ) {
+		var element = findListElement(status.connected[i]);
 		if (element != false) {
 			element.addClass("w3-green");
             element.find("span:eq(1)").text("Connected");
