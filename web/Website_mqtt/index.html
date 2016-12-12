@@ -6,389 +6,115 @@
   <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="js_test.js"></script>
   <script type="text/javascript" src="mqttws31.js"></script>
 </head>
 <body>
 
 <header>
- <ul class="w3-navbar">
-  <li><a href="javascript:void(0)" onclick="openMenuItem('Configuration')">Configuration</a></li>
-  <li><a href="javascript:void(0)" onclick="openMenuItem('Measure')">Measure</a></li>
-</ul>
-
+	<ul class="w3-navbar">
+		<li><a href="javascript:void(0)" onclick="openMenuItem('Configuration')">Configuration</a></li>
+		<li><a href="javascript:void(0)" onclick="openMenuItem('Measure')">Measure</a></li>
+	</ul>
 </header>
 
 <div id="Configuration" class="menuItem">
-  <div class="w3-container w3-teal">
-  <h2>Configuration</h2>
-  </div>
-  <div class="w3-panel">
-  <input type="checkbox" id="scanCB" /> Scan
-  
-  <p>Gefundene BLE Sensoren:<p>
- 
- 
-   <ul class="w3-ul w3-card-4 w3-margin-top" id="ScanList">
-  <li class="w3-padding-16" style="display:none;" >
-    <span class="w3-xlarge">Template Device Name</span><br>
-    <span>Disconnected</span>
-  </li>
-</ul>
-  
-  </div>
+	<div class="w3-container w3-teal">
+		<h2>Configuration</h2>
+	</div>
+	<div class="w3-panel">
+  		<input type="checkbox" id="scanCB" /> Scan
+		<p>Gefundene BLE Sensoren:<p>
+		
+		
+		<ul class="w3-ul w3-card-4 w3-margin-top" id="ScanList">
+			<li class="w3-padding-16" style="display:none;" >
+				<span class="w3-xlarge">Template Device Name</span><br>
+				<span>Disconnected</span>
+			</li>
+		</ul>
+	</div>
 </div>
 
 <div id="Measure" class="menuItem">
-  <div class="w3-container w3-teal">
-  <h2>Measure</h2>
-  </div>
-  <div class="w3-panel">
-  <div class="w3-panel w3-light-grey">
-  <p>Temperature</p>
-  <div id="tempChart" style="width: 700px; height: 350px"></div><br>
-  </div>
-  
-  <div class="w3-panel w3-light-grey">
-  <p>Acceleration</p>
-   <div id="accelChart" style="width: 700px; height: 350px"></div><br>
-  </div>
-  
-  <div class="w3-panel w3-light-grey">
-  <p>Gyroscope</p>
-  <div id="gyroChart" style="width: 700px; height: 350px"></div><br>
-  </div>
+	<div class="w3-container w3-teal">
+		<h2>Measure</h2>
+	</div>
+	<div class="w3-panel">
+	<div class="w3-panel w3-light-grey">
+		<p>Temperature</p>
+		<div id="tempChart" style="width: 700px; height: 350px"></div><br>
+	</div>
+  	
+	<div class="w3-panel w3-light-grey">
+		<p>Acceleration</p>
+		<div id="accelChart" style="width: 700px; height: 350px"></div><br>
+	</div>
+  	
+	<div class="w3-panel w3-light-grey">
+		<p>Gyroscope</p>
+		<div id="gyroChart" style="width: 700px; height: 350px"></div><br>
+	</div>
+</body>
 
 
-<script type="text/javascript">
-
-/*-----------------------------------------------------------------------------------------------------------------------*/
-/* Website functions */
-/*-----------------------------------------------------------------------------------------------------------------------*/
-
+<script>
 openMenuItem("Configuration");
 
-function openMenuItem(Item) {
-  $(".menuItem").hide();
-  $("#"+Item).show(); 
-  if (Item == "Measure") {
-  	drawAllCharts();
-  }
-}
-
-/* Scan List */
-
-$( "#ScanList li" ).click(function() {
-  $( "#ScanList li").not(this).removeClass("w3-orange w3-green");
+$("#ScanList li" ).click(function() {
+	$("#ScanList li").not(this).removeClass("w3-orange w3-green");
   
-  if( $( this ).hasClass("w3-green") || $(this).hasClass("w3-orange")) {
-  	// disconnect
-	var obj = {
-		disconnect: $(this).data("Adress")
-	};
-	send(obj);
-	$( this ).removeClass( "w3-green w3-orange" );
-  } else {
-  	//connect
-	var obj = {
-		connect: $(this).data("Adress")
-	};
-	send(obj);
-	$( this ).addClass( "w3-orange" ).find("span:eq(1)").text("Connecting");
+	if( $(this).hasClass("w3-green") || $(this).hasClass("w3-orange")) {
+		// this device is connected: disconnect it
+		var obj = {
+			disconnect: $(this).data("Adress")
+		};
+		send(obj);
+		$(this).removeClass("w3-green w3-orange");
+	}
+	else {
+		// this device is disconnected: connect it
+		var obj = {
+			connect: $(this).data("Adress")
+		};
+		send(obj);
+		$(this).addClass("w3-orange").find("span:eq(1)").text("Connecting");
 	}
 });
 
 /* Checkbox returns the selected value (true / false) */
 
 $( "#scanCB" ).change(function() {
-  var obj = {
-  	scan: $(this).prop("checked") //return true or false
-  };
-  send(obj);
+	var obj = {
+		scan: $(this).prop("checked") //return true or false
+	};
+	send(obj);
 });
 
 /*-----------------------------------------------------------------------------------------------------------------------*/
 /* Data Communication */
 /*-----------------------------------------------------------------------------------------------------------------------*/
 
- // Parameters
-        var hostname = '147.87.98.17';
-        var port = 9001;
+// Parameters
+var hostname = '147.87.98.17';
+var port = 9001;
 
-        // Create a client instance
-        var client = new Paho.MQTT.Client(hostname, port, '/mqtt', "clientId"+Math.random());
+// Create a client instance
+var client = new Paho.MQTT.Client(hostname, port, '/mqtt', "clientId"+Math.random());
 
-        // Set callback handlers
-        client.onConnectionLost = onConnectionLost;
-        client.onMessageArrived = onMessageArrived;
+// Set callback handlers
+client.onConnectionLost = onConnectionLost;
+client.onMessageArrived = onMessageArrived;
 
-        // Connect the client
-        client.connect({
-            userName: "gruppe_11",
-            password: "P8G42XEe",
-            onSuccess: onConnect,
-            onFailure: onConnectionFailure
-        });
+// Connect the client
+client.connect({
+    userName: "gruppe_11",
+    password: "P8G42XEe",
+    onSuccess: onConnect,
+    onFailure: onConnectionFailure
+});
 
-        // Called when the client connects
-        function onConnect() {
-            // Once a connection has been made, make a subscription and send a message.
-            console.log("onConnect");
-            client.subscribe("EmbSy/gruppe_11/web");
-        }
-
-        // Called when the client could not connect
-        function onConnectionFailure() {
-            console.log("onConnectionFailure");
-        }
-
-        // Called when the client loses its connection
-        function onConnectionLost(responseObject) {
-            if (responseObject.errorCode !== 0) {
-                console.log("onConnectionLost:" + responseObject.errorMessage);
-            }
-        }
-
-        // Called when a message arrives
-        function onMessageArrived(message) {
-            var obj = JSON.parse(message.payloadString);
-            console.log("Message arrived: topic=" + message.destinationName + ", message=",obj);
-			if ("status" in obj) {
-				statusChange(obj.status);
-			}
-			else if("data" in obj){
-				dataArrived(obj.data); 
-			}
-			else {
-				console.log("no devices available");
-			}
-			/*var span = document.getElementById('message');*/
-			/*span.textContent= "topic:	" + message.destinationName + "		message:	" + message.payloadString;*/
-        }
-
-        function send(obj) {
-            if (!client) {
-                return;
-            }
-			
-            var message = new Paho.MQTT.Message(JSON.stringify(obj));
-            message.destinationName = "EmbSy/gruppe_11/cli";
-            client.send(message);
-        }
-		/* function lists the detected devices*/
-		function devicesDetect(devices){
-			var numOfDevices = devices.length;
-			
-			/* add new list element */
-			for (var i = 0; i < numOfDevices; i++) {
-				if (findListElement(devices[i].addr) == false){
-					console.log("Adress: " + devices[i].addr + " Description: " + devices[i].desc);
-					var newDev = $("#ScanList li:first").clone(true);
-					newDev.find("span:first").text(devices[i].desc + " (" + devices[i].addr + ")");
-					newDev.data("Adress", devices[i].addr );
-					newDev.show();
-					newDev.appendTo("#ScanList");
-				}
-			}
-			/* remove list element */
-			var entries = $("#ScanList li:visible");
-			for (var i = 0; i < entries.length; i++){
-				if(findArrayElement(($(entries[i]).data("Adress")), devices) == false){
-					$(entries[i]).remove();
-				}
-			}
-		}
-		
-		/* function finds listed elements by adress */
-		function findListElement(adress){
-			var entries = $("#ScanList li:visible");
-			for (var i = 0; i < entries.length; i++){
-				if ($(entries[i]).data("Adress") == adress){
-					return $(entries[i]);
-				}
-			}
-			return false;
-		}
-		
-		function findArrayElement(adress, array){
-			var arraySize = array.length;
-			for (var i = 0; i < arraySize; i++) {
-				if (array[i].addr == adress){
-					return array[i];
-				}
-			}
-			return false;
-		}
-		
-		function statusChange(status) {
-			$( "#scanCB" ).prop("checked", status.scan);
-
-
-      devicesDetect(obj.devices);
-
-			$( "#ScanList li" ).removeClass("w3-green w3-orange").find("span:eq(1)").text("Disconnected");
-			for (var i = 0; i < status.connected.length; i++ ) {
-				var element = findListElement(status.connected[i]);
-				if (element != false) {
-					element.addClass("w3-green");
-                    element.find("span:eq(1)").text("Connected");
-				}
-			}
-		}
-		
-		function dataArrived(data) { 
-			if ( $("#Measure").is(":visible")){
-				switch (data.type) {
-					case "temperature":{
-						console.log(data.raw);
-						$("#tempChart").data("array").addRows([
-							['', data.raw]
-						]);
-						$("#tempChart").data("chart").draw($("#tempChart").data("array"), $("#tempChart").data("options"));
-					}
-					break;
-					case "accelerate":{
-						
-					}
-					break;
-					case "gyro":{
-						
-					}
-					break;
-				}
-			}
-		}
-		
-		
-		/* Google Chart */
-		google.charts.load('current', {packages: ['line']});
-		
-		function drawAllCharts(){
-			drawChartAccel();
-			drawChartGyro();
-			drawChartTemp();
-		}
-		/* Acceleration Chart */
-		
-		function drawChartAccel() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'time');
-            data.addColumn('number', 'X');
-            data.addColumn('number', 'Y');
-            data.addColumn('number', 'Z');
-
-            data.addRows([
-                ['', 37.8, 80.8, 41.8],
-                ['', 30.9, 69.5, 32.4],
-                ['', 25.4,   57, 25.7],
-                ['', 11.7, 18.8, 10.5],
-                ['', 11.9, 17.6, 10.4],
-                ['',  8.8, 13.6,  7.7],
-                ['',  7.6, 12.3,  9.6],
-                ['', 12.3, 29.2, 10.6],
-                ['', 16.9, 42.9, 14.8],
-                ['', 12.8, 30.9, 11.6],
-                ['',  5.3,  7.9,  4.7],
-                ['',  6.6,  8.4,  5.2],
-                ['',  4.8,  6.3,  3.6],
-                ['',  4.2,  6.2,  3.4]
-            ]);
-
-            var options = {
-                chart: {
-                    title: 'Sensor Data'
-                },
-                width: 700,
-                height: 350
-            };
-
-            var chart = new google.charts.Line($("#accelChart")[0]);
-            chart.draw(data, options);
-        }
-		
-		/* Gyroscope Chart */
-		
-		function drawChartGyro() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'time');
-            data.addColumn('number', 'X');
-            data.addColumn('number', 'Y');
-            data.addColumn('number', 'Z');
-
-            data.addRows([
-                ['', 37.8, 80.8, 41.8],
-                ['', 30.9, 69.5, 32.4],
-                ['', 25.4,   57, 25.7],
-                ['', 11.7, 18.8, 10.5],
-                ['', 11.9, 17.6, 10.4],
-                ['',  8.8, 13.6,  7.7],
-                ['',  7.6, 12.3,  9.6],
-                ['', 12.3, 29.2, 10.6],
-                ['', 16.9, 42.9, 14.8],
-                ['', 12.8, 30.9, 11.6],
-                ['',  5.3,  7.9,  4.7],
-                ['',  6.6,  8.4,  5.2],
-                ['',  4.8,  6.3,  3.6],
-                ['',  4.2,  6.2,  3.4]
-            ]);
-
-            var options = {
-                chart: {
-                    title: 'Sensor Data'
-                },
-                width: 700,
-                height: 350
-            };
-
-            var chart = new google.charts.Line($("#gyroChart")[0]);
-            chart.draw(data, options);
-        }
-		
-		/* Temperature Chart */
-		
-		function drawChartTemp() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'time');
-            data.addColumn('number', '°C');
-           
-            data.addRows([
-                ['', 37.8],
-                ['', 30.9],
-                ['', 25.4],
-                ['', 11.7],
-                ['', 11.9],
-                ['',  8.8],
-                ['',  7.6],
-                ['', 12.3],
-                ['', 16.9],
-                ['', 12.8],
-                ['',  5.3],
-                ['',  6.6],
-                ['',  4.8],
-                ['',  4.2]
-            ]);
-
-            var options = {
-                chart: {
-                    title: 'Sensor Data'
-                },
-                width: 700,
-                height: 350
-            };
-			
-			$("#tempChart").data("options", options);
-			$("#tempChart").data("array", data);
-            var chart = new google.charts.Line($("#tempChart")[0]);
-            chart.draw(data, options);
-			$("#tempChart").data("chart", chart);
-			
-			
-        }
-		
-
+/* Google Chart */
+google.charts.load('current', {packages: ['line']});
 </script>
-</body>
 </html>
-
-
-
-
