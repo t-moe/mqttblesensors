@@ -6,7 +6,8 @@
   <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript" src="js_test.js"></script>
+  <script type="text/javascript" src="configuration.js"></script>
+   <script type="text/javascript" src="measure.js"></script>
   <script type="text/javascript" src="mqttws31.js"></script>
 </head>
 <body>
@@ -57,9 +58,16 @@
 	</div>
 </body>
 
-
 <script>
+/*------------------------------------------------------------------------------+
+|	Javascript code for web navigation and communication to broker				|
++------------------------------------------------------------------------------*/
 openMenuItem("Configuration");
+
+function openMenuItem(Item) {
+  $(".menuItem").hide();
+  $("#"+Item).show();
+}
 
 $("#ScanList li" ).click(function() {
 	$("#ScanList li").not(this).removeClass("w3-orange w3-green");
@@ -113,10 +121,48 @@ client.connect({
     onFailure: onConnectionFailure
 });
 
-/* Google Chart */
-google.charts.load('current', {packages: ['line']});
-google.charts.setOnLoadCallback(drawChartAccel);
-google.charts.setOnLoadCallback(drawChartGyro);
-google.charts.setOnLoadCallback(drawChartTemp);
+/* message received from broker */
+function onMessageArrived(message) {
+    var obj = JSON.parse(message.payloadString);
+    console.log("Message arrived: topic=" + message.destinationName + ", message=",obj);
+	if ("status" in obj) {
+		statusChange(obj.status);
+	}
+	else if("data" in obj){
+		dataArrived(obj.data); 
+	}
+	else {
+		console.log("no devices available");
+	}
+}
+
+/* send a message to broker */
+function send(obj) {
+    if (!client) {
+        return;
+    }
+    var message = new Paho.MQTT.Message(JSON.stringify(obj));
+    message.destinationName = "EmbSy/gruppe_11/cli";
+    client.send(message);
+}
+
+// Called when the client connects
+function onConnect() {
+    // Once a connection has been made, make a subscription and send a message.
+    console.log("onConnect");
+    client.subscribe("EmbSy/gruppe_11/web");
+}
+
+// Called when the client could not connect
+function onConnectionFailure() {
+    console.log("onConnectionFailure");
+}
+
+// Called when the client loses its connection
+function onConnectionLost(responseObject) {
+    if (responseObject.errorCode !== 0) {
+        console.log("onConnectionLost:" + responseObject.errorMessage);
+    }
+}
 </script>
 </html>
