@@ -3,11 +3,14 @@
 /*------------------------------------------------------------------------------+
 |	Menu Toolbar																|
 +------------------------------------------------------------------------------*/
+var measuresPerSec = 4;
+var recordTime = 30;
+
 function openMenuItem(Item) {
   $(".menuItem").hide();
   $("#"+Item).show(); 
   if (Item == "Measure") {
-  	drawAllCharts();
+  	//drawAllCharts();
   }
 }
 
@@ -106,7 +109,7 @@ function findArrayElement(adress, array){
 
 function statusChange(status) {
 	$( "#scanCB" ).prop("checked", status.scan);
-	devicesDetect(obj.devices);
+	devicesDetect(status.devices);
 	$( "#ScanList li" ).removeClass("w3-green w3-orange").find("span:eq(1)").text("Disconnected");
 	for (var i = 0; i < status.connected.length; i++ ) {
 		var element = findListElement(status.connected[i]);
@@ -121,7 +124,10 @@ function dataArrived(data) {
 	if ($("#Measure").is(":visible")){
 		switch (data.type) {
 			case "temperature":{
-				//console.log(data.raw);
+				if($("#tempChart").data("array").getNumberOfRows() >= (recordTime * measuresPerSec)){
+					$("#tempChart").data("array").removeRow(0);
+				}
+				
 				$("#tempChart").data("array").addRows([
 					['', data.raw]
 				]);
@@ -129,17 +135,10 @@ function dataArrived(data) {
 			}
 			break;
 			case "accelerate":{
-				//console.log(data.raw.x);
-				//console.log(data.raw.y);
-				//console.log(data.raw.z);
+				if($("#accelChart").data("array").getNumberOfRows() >= (recordTime * measuresPerSec)){
+					$("#accelChart").data("array").removeRow(0);
+				}
 				
-				/* collect data and calculate average values */
-				
-				/*if(int i >= maxMeasurements)
-				{
-					average value of the last measurements is calculated
-					add new data to chart
-				}*/
 				$("#accelChart").data("array").addRows([
 					['', data.raw.x, data.raw.y, data.raw.z]
 				]);
@@ -147,9 +146,10 @@ function dataArrived(data) {
 			}
 			break;
 			case "gyro":{
-				//console.log(data.raw.x);
-				//console.log(data.raw.y);
-				//console.log(data.raw.z);
+				/* update chart */
+				if($("#gyroChart").data("array").getNumberOfRows() >= (recordTime * measuresPerSec)){
+					$("#gyroChart").data("array").removeRow(0);
+				}
 				
 				$("#gyroChart").data("array").addRows([
 					['', data.raw.x, data.raw.y, data.raw.z]
@@ -165,13 +165,13 @@ function dataArrived(data) {
 |	Menu Item Measure															|
 +------------------------------------------------------------------------------*/
 
-function drawAllCharts(){
+/*function drawAllCharts(){
 	drawChartAccel();
 	drawChartGyro();
 	drawChartTemp();
-}
-/* Acceleration Chart */
+}*/
 
+/* Acceleration Chart */
 function drawChartAccel() {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'time');
@@ -179,22 +179,10 @@ function drawChartAccel() {
     data.addColumn('number', 'Y');
     data.addColumn('number', 'Z');
 
-    data.addRows([
-        ['', 37.8, 80.8, 41.8],
-        ['', 30.9, 69.5, 32.4],
-        ['', 25.4,   57, 25.7],
-        ['', 11.7, 18.8, 10.5],
-        ['', 11.9, 17.6, 10.4],
-        ['',  8.8, 13.6,  7.7],
-        ['',  7.6, 12.3,  9.6],
-        ['', 12.3, 29.2, 10.6],
-        ['', 16.9, 42.9, 14.8],
-        ['', 12.8, 30.9, 11.6],
-        ['',  5.3,  7.9,  4.7],
-        ['',  6.6,  8.4,  5.2],
-        ['',  4.8,  6.3,  3.6],
-        ['',  4.2,  6.2,  3.4]
-    ]);
+	// no start values
+	/*data.addRows([
+		['',0,0,0]
+    ]);*/
 
     var options = {
         chart: {
@@ -212,7 +200,6 @@ function drawChartAccel() {
 }
 
 /* Gyroscope Chart */
-
 function drawChartGyro() {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'time');
@@ -220,22 +207,10 @@ function drawChartGyro() {
     data.addColumn('number', 'Y');
     data.addColumn('number', 'Z');
 
-    data.addRows([
-        ['', 37.8, 80.8, 41.8],
-        ['', 30.9, 69.5, 32.4],
-        ['', 25.4,   57, 25.7],
-        ['', 11.7, 18.8, 10.5],
-        ['', 11.9, 17.6, 10.4],
-        ['',  8.8, 13.6,  7.7],
-        ['',  7.6, 12.3,  9.6],
-        ['', 12.3, 29.2, 10.6],
-        ['', 16.9, 42.9, 14.8],
-        ['', 12.8, 30.9, 11.6],
-        ['',  5.3,  7.9,  4.7],
-        ['',  6.6,  8.4,  5.2],
-        ['',  4.8,  6.3,  3.6],
-        ['',  4.2,  6.2,  3.4]
-    ]);
+	// no start values
+    /*data.addRows([
+		['',0,0,0]
+    ]);*/
 
     var options = {
         chart: {
@@ -253,28 +228,15 @@ function drawChartGyro() {
 }
 
 /* Temperature Chart */
-
 function drawChartTemp() {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'time');
     data.addColumn('number', '°C');
    
-    data.addRows([
-        ['', 37.8],
-        ['', 30.9],
-        ['', 25.4],
-        ['', 11.7],
-        ['', 11.9],
-        ['',  8.8],
-        ['',  7.6],
-        ['', 12.3],
-        ['', 16.9],
-        ['', 12.8],
-        ['',  5.3],
-        ['',  6.6],
-        ['',  4.8],
-        ['',  4.2]
-    ]);
+   // no start values
+    /*data.addRows([
+		['',	0]
+    ]);*/
 
     var options = {
         chart: {

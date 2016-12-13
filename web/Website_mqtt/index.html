@@ -83,7 +83,6 @@ $("#ScanList li" ).click(function() {
 });
 
 /* Checkbox returns the selected value (true / false) */
-
 $( "#scanCB" ).change(function() {
 	var obj = {
 		scan: $(this).prop("checked") //return true or false
@@ -116,5 +115,8 @@ client.connect({
 
 /* Google Chart */
 google.charts.load('current', {packages: ['line']});
+google.charts.setOnLoadCallback(drawChartAccel);
+google.charts.setOnLoadCallback(drawChartGyro);
+google.charts.setOnLoadCallback(drawChartTemp);
 </script>
 </html>
