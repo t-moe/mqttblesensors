@@ -279,13 +279,8 @@ void Controller::brokerCmdDisconnect(const QString &address)
     if(_connectedDevices.contains(address)) {
         QJsonObject msg;
         msg["command"] = "StopMeasurement";
-        //msg["command"] = "Disconnect";
         msg["device"] = address;
         _hub.sendMessage(msg);
-
-        //Temporary to fix
-        //TODO: remove?
-        //hubDeviceDisconnected(address);
     }
 }
 

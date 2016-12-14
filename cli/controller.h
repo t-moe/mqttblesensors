@@ -39,7 +39,6 @@ private:
     QDateTime _lastAccelData;
 
 
-
     void hubDeviceDiscovered(const QString&, const QJsonObject& device);
     void hubDeviceConnected(const QString& address, const QJsonObject&);
     void hubGyroConfigured(const QString& address, const QJsonObject&);

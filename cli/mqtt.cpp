@@ -46,16 +46,17 @@ void MQTT::connlost(void *context, char *cause)
 
 void MQTT::onDisconnect(void* context, MQTTAsync_successData* response)
 {
-     MQTT* inst = static_cast<MQTT*>(context);
-     inst->_connected = false;
+    Q_UNUSED(response);
+    MQTT* inst = static_cast<MQTT*>(context);
+    inst->_connected = false;
     qDebug() << "Successful disconnection";
-
 }
 
 
 void MQTT::onSend(void* context, MQTTAsync_successData* response)
 {
     MQTT* inst = static_cast<MQTT*>(context);
+    Q_UNUSED(inst);
     qDebug() << "Message with token value " << response->token << "delivery confirmed";
 }
 
@@ -63,6 +64,7 @@ void MQTT::onSend(void* context, MQTTAsync_successData* response)
 void MQTT::onConnectFailure(void* context, MQTTAsync_failureData* response)
 {
     MQTT* inst = static_cast<MQTT*>(context);
+    Q_UNUSED(inst);
     qDebug() << "Connect failed, rc" <<(response ? response->code : 0);
 }
 
@@ -71,6 +73,7 @@ void MQTT::onConnectFailure(void* context, MQTTAsync_failureData* response)
 
 void MQTT::onConnect(void* context, MQTTAsync_successData* response)
 {
+    Q_UNUSED(response);
     MQTT* inst = static_cast<MQTT*>(context);
     MQTTAsync_responseOptions opts = MQTTAsync_responseOptions_initializer;
 
@@ -91,7 +94,7 @@ int MQTT::msgarrvd(void *context, char *topicName, int topicLen, MQTTAsync_messa
 {
     MQTT* inst = static_cast<MQTT*>(context);
 
-
+    Q_UNUSED(topicLen);
     //qDebug()  << "Message arrived. Topic" << topicName;
 
     char* content = static_cast<char*>(message->payload);
