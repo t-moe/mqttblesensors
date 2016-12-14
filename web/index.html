@@ -1,8 +1,153 @@
+<!DOCTYPE html>
 <html>
 <head>
-<title>Test2</title>
+  <title>BLE Sensor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
+  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="configuration.js"></script>
+   <script type="text/javascript" src="measure.js"></script>
+  <script type="text/javascript" src="mqttws31.js"></script>
 </head>
 <body>
-<h2>Test</h2>
+
+<header>
+	<ul class="w3-navbar">
+		<li><a href="javascript:void(0)" onclick="openMenuItem('Configuration')">Configuration</a></li>
+		<li><a href="javascript:void(0)" onclick="openMenuItem('Measure')">Measure</a></li>
+	</ul>
+</header>
+
+<div id="Configuration" class="menuItem">
+	<div class="w3-container w3-teal">
+		<h2>Configuration</h2>
+	</div>
+	<div class="w3-panel">
+  		<input type="checkbox" id="scanCB" /> Scan
+		<p>Gefundene BLE Sensoren:<p>
+		
+		
+		<ul class="w3-ul w3-card-4 w3-margin-top" id="ScanList">
+			<li class="w3-padding-16" style="display:none;" >
+				<span class="w3-xlarge">Template Device Name</span><br>
+				<span>Disconnected</span>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div id="Measure" class="menuItem">
+	<div class="w3-container w3-teal">
+		<h2>Measure</h2>
+	</div>
+	<div class="w3-panel">
+	<div class="w3-panel w3-light-grey">
+		<p>Temperature</p>
+		<div id="tempChart" style="width: 700px; height: 350px"></div><br>
+	</div>
+  	
+	<div class="w3-panel w3-light-grey">
+		<p>Acceleration</p>
+		<div id="accelChart" style="width: 700px; height: 350px"></div><br>
+	</div>
+  	
+	<div class="w3-panel w3-light-grey">
+		<p>Gyroscope</p>
+		<div id="gyroChart" style="width: 700px; height: 350px"></div><br>
+	</div>
 </body>
+
+<script>
+/*------------------------------------------------------------------------------+
+|	Javascript code for web navigation and communication to broker				|
++------------------------------------------------------------------------------*/
+openMenuItem("Configuration");
+
+/* Google Chart */
+var measuresPerSec = 4;
+var recordTime = 30;
+var isFirstOpen = true;
+
+google.charts.load('current', {packages: ['line']});
+
+function openMenuItem(Item) {
+  $(".menuItem").hide();
+  $("#"+Item).show();
+  if(Item == "Measure" && isFirstOpen){
+  	drawChartAccel();
+  	drawChartGyro();
+  	drawChartTemp();
+	isFirstOpen = false;
+  }
+}
+
+
+/*-----------------------------------------------------------------------------------------------------------------------*/
+/* Data Communication */
+/*-----------------------------------------------------------------------------------------------------------------------*/
+
+// Parameters
+var hostname = '147.87.98.17';
+var port = 9001;
+
+// Create a client instance
+var client = new Paho.MQTT.Client(hostname, port, '/mqtt', "clientId"+Math.random());
+
+// Set callback handlers
+client.onConnectionLost = onConnectionLost;
+client.onMessageArrived = onMessageArrived;
+
+// Connect the client
+client.connect({
+    userName: "gruppe_11",
+    password: "P8G42XEe",
+    onSuccess: onConnect,
+    onFailure: onConnectionFailure
+});
+
+/* message received from broker */
+function onMessageArrived(message) {
+    var obj = JSON.parse(message.payloadString);
+    console.log("Message arrived: topic=" + message.destinationName + ", message=",obj);
+	if ("status" in obj) {
+		statusChange(obj.status);
+	}
+	else if("data" in obj){
+		dataArrived(obj.data); 
+	}
+	else {
+		console.log("Command not understood");
+	}
+}
+
+/* send a message to broker */
+function send(obj) {
+    if (!client) {
+        return;
+    }
+    var message = new Paho.MQTT.Message(JSON.stringify(obj));
+    message.destinationName = "EmbSy/gruppe_11/cli";
+    client.send(message);
+}
+
+// Called when the client connects
+function onConnect() {
+    // Once a connection has been made, make a subscription and send a message.
+    console.log("onConnect");
+    client.subscribe("EmbSy/gruppe_11/web");
+}
+
+// Called when the client could not connect
+function onConnectionFailure() {
+    console.log("onConnectionFailure");
+}
+
+// Called when the client loses its connection
+function onConnectionLost(responseObject) {
+    if (responseObject.errorCode !== 0) {
+        console.log("onConnectionLost:" + responseObject.errorMessage);
+    }
+}
+</script>
 </html>
