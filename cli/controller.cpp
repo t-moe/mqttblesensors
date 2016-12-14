@@ -23,11 +23,11 @@ void Controller::brokerMessageReceived(const QJsonObject &obj)
         bool shouldScan = obj["scan"].toBool();
         brokerCmdScan(shouldScan);
    } else if(obj["connect"].isString()) {
-        QString address = obj["connect"].toString();
-        brokerCmdConnect(address);
+        QString adress = obj["connect"].toString();
+        brokerCmdConnect(adress);
    } else if(obj["disconnect"].isString()) {
-       QString address = obj["disconnect"].toString();
-       brokerCmdDisconnect(address);
+       QString adress = obj["disconnect"].toString();
+       brokerCmdDisconnect(adress);
    } else {
        qDebug() << "Unknown command" << obj;
    }
@@ -68,11 +68,11 @@ void Controller::hubDeviceDiscovered(const QString &, const QJsonObject &device)
     if(_scanning) {
         QString addr = device["id"].toString();
         QString desc = device["name"].toString();
-        if(!_scanAddresses.contains(addr)) {
+        if(!_scanAdresses.contains(addr)) {
             QJsonObject deviceObject;
             deviceObject["addr"] = addr;
             deviceObject["desc"] = desc;
-            _scanAddresses.append(addr);
+            _scanAdresses.append(addr);
             _scanList.append(deviceObject);
 
             brokerResendStatus(); //because the scan list was modified
@@ -80,13 +80,13 @@ void Controller::hubDeviceDiscovered(const QString &, const QJsonObject &device)
     }
 }
 
-void Controller::hubDeviceConnected(const QString &address, const QJsonObject&)
+void Controller::hubDeviceConnected(const QString &adress, const QJsonObject&)
 {
-    if(_connectedDevices.contains(address)) {
-        _connectedDevices[address] = Controller::Connected;
+    if(_connectedDevices.contains(adress)) {
+        _connectedDevices[adress] = Controller::Connected;
         QJsonObject msg;
         msg["command"] = "ConfigGyro";
-        msg["device"] = address;
+        msg["device"] = adress;
 
         QJsonObject data;
         data["on"] = true;
@@ -98,13 +98,13 @@ void Controller::hubDeviceConnected(const QString &address, const QJsonObject&)
     }
 }
 
-void Controller::hubGyroConfigured(const QString &address, const QJsonObject&)
+void Controller::hubGyroConfigured(const QString &adress, const QJsonObject&)
 {
-    if(_connectedDevices.contains(address)) {
-        _connectedDevices[address] = Controller::Configured1;
+    if(_connectedDevices.contains(adress)) {
+        _connectedDevices[adress] = Controller::Configured1;
         QJsonObject msg;
         msg["command"] = "ConfigAccel";
-        msg["device"] = address;
+        msg["device"] = adress;
 
         QJsonObject data;
         data["on"] = true;
@@ -117,13 +117,13 @@ void Controller::hubGyroConfigured(const QString &address, const QJsonObject&)
 }
 
 
-void Controller::hubAccelConfigured(const QString &address, const QJsonObject &)
+void Controller::hubAccelConfigured(const QString &adress, const QJsonObject &)
 {
-    if(_connectedDevices.contains(address)) {
-        _connectedDevices[address] = Controller::Configured2;
+    if(_connectedDevices.contains(adress)) {
+        _connectedDevices[adress] = Controller::Configured2;
         QJsonObject msg;
         msg["command"] = "ConfigTemp";
-        msg["device"] = address;
+        msg["device"] = adress;
 
         QJsonObject data;
         data["on"] = true;
@@ -134,27 +134,27 @@ void Controller::hubAccelConfigured(const QString &address, const QJsonObject &)
     }
 }
 
-void Controller::hubTempConfigured(const QString &address, const QJsonObject&)
+void Controller::hubTempConfigured(const QString &adress, const QJsonObject&)
 {
-    if(_connectedDevices.contains(address)) {
-        _connectedDevices[address] = Controller::Configured3;
+    if(_connectedDevices.contains(adress)) {
+        _connectedDevices[adress] = Controller::Configured3;
 
         QJsonObject msg;
         msg["command"] = "StartMeasurement";
-        msg["device"] = address;
+        msg["device"] = adress;
         _hub.sendMessage(msg);
-        _connectedList.append(address);
+        _connectedList.append(adress);
 
         brokerResendStatus(); //because the device is now connected
     }
 }
 
-void Controller::hubDeviceDisconnected(const QString &address, const QJsonObject&)
+void Controller::hubDeviceDisconnected(const QString &adress, const QJsonObject&)
 {
-    if(_connectedDevices.contains(address)) {
-        _connectedDevices.remove(address);
+    if(_connectedDevices.contains(adress)) {
+        _connectedDevices.remove(adress);
         for(int i=0; i<_connectedList.size(); i++) {
-            if(_connectedList[i].toString()==address) {
+            if(_connectedList[i].toString()==adress) {
                 _connectedList.removeAt(i);
             }
         }
@@ -217,11 +217,11 @@ void Controller::hubAccelData(const QString &adress, const QJsonObject &data)
     }
 }
 
-void Controller::hubTemperatureData(const QString &address, const QJsonObject &data)
+void Controller::hubTemperatureData(const QString &adress, const QJsonObject &data)
 {
-    if(_connectedDevices.contains(address)) {
+    if(_connectedDevices.contains(adress)) {
         QJsonObject dat;
-        dat["device"] = address;
+        dat["device"] = adress;
         dat["type"] = "temperature";
         dat["raw"] = data["value"];
 
@@ -231,12 +231,12 @@ void Controller::hubTemperatureData(const QString &address, const QJsonObject &d
     }
 }
 
-void Controller::hubMeasureStopped(const QString &address, const QJsonObject&)
+void Controller::hubMeasureStopped(const QString &adress, const QJsonObject&)
 {
-    if(_connectedDevices.contains(address)) {
+    if(_connectedDevices.contains(adress)) {
         QJsonObject msg;
         msg["command"] = "Disconnect";
-        msg["device"] = address;
+        msg["device"] = adress;
         _hub.sendMessage(msg);
     }
 }
@@ -251,7 +251,7 @@ void Controller::brokerCmdScan(bool shouldScan)
     _scanning = shouldScan;
 
     if(!_scanning) {
-        _scanAddresses.clear();
+        _scanAdresses.clear();
         _scanList = QJsonArray();
     }
 
@@ -263,23 +263,23 @@ void Controller::brokerCmdScan(bool shouldScan)
     brokerResendStatus(); //Because scan has changed it's value
 }
 
-void Controller::brokerCmdConnect(const QString &address)
+void Controller::brokerCmdConnect(const QString &adress)
 {
-    if(!_connectedDevices.contains(address)) {
-        _connectedDevices.insert(address,Controller::Connecting);
+    if(!_connectedDevices.contains(adress)) {
+        _connectedDevices.insert(adress,Controller::Connecting);
         QJsonObject msg;
         msg["command"] = "Connect";
-        msg["device"] = address;
+        msg["device"] = adress;
         _hub.sendMessage(msg);
     }
 }
 
-void Controller::brokerCmdDisconnect(const QString &address)
+void Controller::brokerCmdDisconnect(const QString &adress)
 {
-    if(_connectedDevices.contains(address)) {
+    if(_connectedDevices.contains(adress)) {
         QJsonObject msg;
         msg["command"] = "StopMeasurement";
-        msg["device"] = address;
+        msg["device"] = adress;
         _hub.sendMessage(msg);
     }
 }

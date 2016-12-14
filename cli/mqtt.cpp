@@ -2,29 +2,24 @@
 #include <QJsonDocument>
 #include <QDebug>
 
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include "MQTTAsync.h"
+#include <unistd.h>
 
 
-#define ADDRESS     "tcp://iot.i3s.bfh.ch:1883"
+//------------------Configuration-----------------------------------
+#define ADRESS     "tcp://iot.i3s.bfh.ch:1883"
 
 #define CLIENTID    "ExampleClientPub"
-#define TOPIC_SEND      "EmbSy/gruppe_11/web"
-#define TOPIC_RECV      "EmbSy/gruppe_11/cli"
+#define TOPIC_SEND  "EmbSy/gruppe_11/web"
+#define TOPIC_RECV  "EmbSy/gruppe_11/cli"
 #define QOS         1
 #define TIMEOUT     10000L
 
 #define USERNAME    "gruppe_11"
 #define PASSWORD    "P8G42XEe"
-
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#include "MQTTAsync.h"
-
-#if !defined(WIN32)
-#include <unistd.h>
-#else
-#include <windows.h>
-#endif
 
 
 
@@ -67,8 +62,6 @@ void MQTT::onConnectFailure(void* context, MQTTAsync_failureData* response)
     Q_UNUSED(inst);
     qDebug() << "Connect failed, rc" <<(response ? response->code : 0);
 }
-
-
 
 
 void MQTT::onConnect(void* context, MQTTAsync_successData* response)
@@ -135,7 +128,7 @@ MQTT::MQTT(QObject *parent) : QObject(parent), _connOpts(MQTTAsync_connectOption
 
     int rc;
 
-    MQTTAsync_create(&_client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
+    MQTTAsync_create(&_client, ADRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
 
     MQTTAsync_setCallbacks(_client, this, connlost, msgarrvd, NULL);
 
@@ -179,7 +172,7 @@ void MQTT::sendMesage(const QJsonObject &msg,  bool persist)
 
 void MQTT::waitOnConnected()
 {
-    while(!_connected);
+    while(!_connected); //Wait until flag is set
 }
 
 MQTT::~MQTT()
