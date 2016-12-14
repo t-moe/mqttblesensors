@@ -59,18 +59,20 @@
 </body>
 
 <script>
+
 /*------------------------------------------------------------------------------+
 |	Javascript code for web navigation and communication to broker				|
 +------------------------------------------------------------------------------*/
 openMenuItem("Configuration");
 
 /* Google Chart */
-var measuresPerSec = 4;
-var recordTime = 30;
-var isFirstOpen = true;
+var measuresPerSec = 4;	// number of received data per second
+var recordTime = 30;	// duration of chart in seconds
+var isFirstOpen = true; // first open flag for measure tab
 
 google.charts.load('current', {packages: ['line']});
 
+/* change to selected tab */
 function openMenuItem(Item) {
   $(".menuItem").hide();
   $("#"+Item).show();
@@ -83,9 +85,9 @@ function openMenuItem(Item) {
 }
 
 
-/*-----------------------------------------------------------------------------------------------------------------------*/
-/* Data Communication */
-/*-----------------------------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------+
+|	Data communication															|
++------------------------------------------------------------------------------*/
 
 // Parameters
 var hostname = '147.87.98.17';
@@ -109,15 +111,16 @@ client.connect({
 /* message received from broker */
 function onMessageArrived(message) {
     var obj = JSON.parse(message.payloadString);
-    console.log("Message arrived: topic=" + message.destinationName + ", message=",obj);
-	if ("status" in obj) {
+    
+	if ("status" in obj) { //status message arrived
 		statusChange(obj.status);
 	}
-	else if("data" in obj){
+	else if("data" in obj){	//data message arrived
 		dataArrived(obj.data); 
 	}
-	else {
+	else { // in case of undefined message -> console log
 		console.log("Command not understood");
+		console.log("Message arrived: topic=" + message.destinationName + ", message=",obj);
 	}
 }
 
