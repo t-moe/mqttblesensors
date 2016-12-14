@@ -1,15 +1,6 @@
 /*------------------------------------------------------------------------------+
 |	Javascript code for measure tab												|
 +------------------------------------------------------------------------------*/
-/* Google Chart */
-var measuresPerSec = 4;
-var recordTime = 30;
-
-google.charts.load('current', {packages: ['line']});
-google.charts.setOnLoadCallback(drawChartAccel);
-google.charts.setOnLoadCallback(drawChartGyro);
-google.charts.setOnLoadCallback(drawChartTemp);
-
 function dataArrived(data) { 
 	if ($("#Measure").is(":visible")){
 		switch (data.type) {
@@ -21,7 +12,10 @@ function dataArrived(data) {
 				$("#tempChart").data("array").addRows([
 					['', data.raw]
 				]);
-				$("#tempChart").data("chart").draw($("#tempChart").data("array"), $("#tempChart").data("options"));
+				if($("#tempChart").is(":visible")){
+					$("#tempChart").data("chart").draw($("#tempChart").data("array"), $("#tempChart").data("options"));
+				}
+				
 			}
 			break;
 			case "accelerate":{
@@ -32,7 +26,9 @@ function dataArrived(data) {
 				$("#accelChart").data("array").addRows([
 					['', data.raw.x, data.raw.y, data.raw.z]
 				]);
-				$("#accelChart").data("chart").draw($("#accelChart").data("array"), $("#accelChart").data("options"));
+				if($("#tempChart").is(":visible")){
+					$("#accelChart").data("chart").draw($("#accelChart").data("array"), $("#accelChart").data("options"));
+				}
 			}
 			break;
 			case "gyro":{
@@ -43,7 +39,9 @@ function dataArrived(data) {
 				$("#gyroChart").data("array").addRows([
 					['', data.raw.x, data.raw.y, data.raw.z]
 				]);
-				$("#gyroChart").data("chart").draw($("#gyroChart").data("array"), $("#gyroChart").data("options"));
+				if($("#tempChart").is(":visible")){
+					$("#gyroChart").data("chart").draw($("#gyroChart").data("array"), $("#gyroChart").data("options"));
+				}
 			}
 			break;
 		}
@@ -57,6 +55,10 @@ function drawChartAccel() {
     data.addColumn('number', 'X');
     data.addColumn('number', 'Y');
     data.addColumn('number', 'Z');
+	
+	data.addRows([
+				['', 0, 0, 0]
+				]);
 	
     var options = {
         chart: {
@@ -81,6 +83,10 @@ function drawChartGyro() {
     data.addColumn('number', 'Y');
     data.addColumn('number', 'Z');
 	
+	data.addRows([
+				['', 0, 0, 0]
+				]);
+	
     var options = {
         chart: {
             title: 'Sensor Data'
@@ -101,6 +107,10 @@ function drawChartTemp() {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'time');
     data.addColumn('number', '°C');
+	
+	data.addRows([
+				['', 0]
+				]);
 	
     var options = {
         chart: {

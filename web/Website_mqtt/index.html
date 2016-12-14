@@ -64,39 +64,24 @@
 +------------------------------------------------------------------------------*/
 openMenuItem("Configuration");
 
+/* Google Chart */
+var measuresPerSec = 4;
+var recordTime = 30;
+var isFirstOpen = true;
+
+google.charts.load('current', {packages: ['line']});
+
 function openMenuItem(Item) {
   $(".menuItem").hide();
   $("#"+Item).show();
+  if(Item == "Measure" && isFirstOpen){
+  	drawChartAccel();
+  	drawChartGyro();
+  	drawChartTemp();
+	isFirstOpen = false;
+  }
 }
 
-$("#ScanList li" ).click(function() {
-	$("#ScanList li").not(this).removeClass("w3-orange w3-green");
-  
-	if( $(this).hasClass("w3-green") || $(this).hasClass("w3-orange")) {
-		// this device is connected: disconnect it
-		var obj = {
-			disconnect: $(this).data("Adress")
-		};
-		send(obj);
-		$(this).removeClass("w3-green w3-orange");
-	}
-	else {
-		// this device is disconnected: connect it
-		var obj = {
-			connect: $(this).data("Adress")
-		};
-		send(obj);
-		$(this).addClass("w3-orange").find("span:eq(1)").text("Connecting");
-	}
-});
-
-/* Checkbox returns the selected value (true / false) */
-$( "#scanCB" ).change(function() {
-	var obj = {
-		scan: $(this).prop("checked") //return true or false
-	};
-	send(obj);
-});
 
 /*-----------------------------------------------------------------------------------------------------------------------*/
 /* Data Communication */
@@ -132,7 +117,7 @@ function onMessageArrived(message) {
 		dataArrived(obj.data); 
 	}
 	else {
-		console.log("no devices available");
+		console.log("Command not understood");
 	}
 }
 
