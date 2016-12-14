@@ -3,47 +3,38 @@
 +------------------------------------------------------------------------------*/
 function dataArrived(data) { 
 	if ($("#tempChart").data("chart")){
+		var modifiedChart;
+		var modifiedDataArray;
+		
 		switch (data.type) {
 			case "temperature":{
-				if($("#tempChart").data("array").getNumberOfRows() >= (recordTime * measuresPerSec)){
-					$("#tempChart").data("array").removeRow(0);
-				}
+				modifiedChart = $("#tempChart");
+				modifiedDataArray = $("#tempChart").data("array");
 				
-				$("#tempChart").data("array").addRows([
-					['', data.raw]
-				]);
-				if($("#tempChart").is(":visible")){
-					$("#tempChart").data("chart").draw($("#tempChart").data("array"), $("#tempChart").data("options"));
-				}
-				
+				modifiedDataArray.addRow(['', data.raw]);
 			}
 			break;
 			case "accelerate":{
-				if($("#accelChart").data("array").getNumberOfRows() >= (recordTime * measuresPerSec)){
-					$("#accelChart").data("array").removeRow(0);
-				}
+				modifiedDataArray = $("#accelChart").data("array");
+				modifiedChart = $("#accelChart");
 				
-				$("#accelChart").data("array").addRows([
-					['', data.raw.x, data.raw.y, data.raw.z]
-				]);
-				if($("#accelChart").is(":visible")){
-					$("#accelChart").data("chart").draw($("#accelChart").data("array"), $("#accelChart").data("options"));
-				}
+				modifiedDataArray.addRow(['', data.raw.x, data.raw.y, data.raw.z]);
 			}
 			break;
 			case "gyro":{
-				if($("#gyroChart").data("array").getNumberOfRows() >= (recordTime * measuresPerSec)){
-					$("#gyroChart").data("array").removeRow(0);
-				}
+				modifiedDataArray = $("#gyroChart").data("array");
+				modifiedChart = $("#gyroChart");
 				
-				$("#gyroChart").data("array").addRows([
-					['', data.raw.x, data.raw.y, data.raw.z]
-				]);
-				if($("#gyroChart").is(":visible")){
-					$("#gyroChart").data("chart").draw($("#gyroChart").data("array"), $("#gyroChart").data("options"));
-				}
+				modifiedDataArray.addRow(['', data.raw.x, data.raw.y, data.raw.z]);
 			}
 			break;
+		}
+		
+		if(modifiedDataArray.getNumberOfRows() >= (recordTime * measuresPerSec)){
+			modifiedDataArray.removeRow(0);
+		}
+		if(modifiedChart.is(":visible")){
+			modifiedChart.data("chart").draw(modifiedDataArray, modifiedChart.data("options"));
 		}
 	}
 }
