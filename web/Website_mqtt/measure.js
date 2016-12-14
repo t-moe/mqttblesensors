@@ -2,7 +2,7 @@
 |	Javascript code for measure tab												|
 +------------------------------------------------------------------------------*/
 function dataArrived(data) { 
-	if ($("#Measure").is(":visible")){
+	if ($("#tempChart").data("chart")){
 		switch (data.type) {
 			case "temperature":{
 				if($("#tempChart").data("array").getNumberOfRows() >= (recordTime * measuresPerSec)){
@@ -26,7 +26,7 @@ function dataArrived(data) {
 				$("#accelChart").data("array").addRows([
 					['', data.raw.x, data.raw.y, data.raw.z]
 				]);
-				if($("#tempChart").is(":visible")){
+				if($("#accelChart").is(":visible")){
 					$("#accelChart").data("chart").draw($("#accelChart").data("array"), $("#accelChart").data("options"));
 				}
 			}
@@ -39,7 +39,7 @@ function dataArrived(data) {
 				$("#gyroChart").data("array").addRows([
 					['', data.raw.x, data.raw.y, data.raw.z]
 				]);
-				if($("#tempChart").is(":visible")){
+				if($("#gyroChart").is(":visible")){
 					$("#gyroChart").data("chart").draw($("#gyroChart").data("array"), $("#gyroChart").data("options"));
 				}
 			}
