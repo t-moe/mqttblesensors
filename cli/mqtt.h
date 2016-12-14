@@ -14,6 +14,9 @@ public:
     void waitOnConnected();
     ~MQTT();
 
+signals:
+    void messageReceived(QJsonObject msg);
+
 private:
     void disconnect();
 
@@ -27,10 +30,6 @@ private:
     static void onConnectFailure(void* context, MQTTAsync_failureData* response);
     static void onConnect(void* context, MQTTAsync_successData* response);
     static int msgarrvd(void *context, char *topicName, int topicLen, MQTTAsync_message *message);
-signals:
-    void messageReceived(QJsonObject msg);
-
-public slots:
 };
 
 #endif // MQTT_H

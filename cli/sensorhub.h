@@ -10,12 +10,10 @@ class SensorHub : public QObject
     Q_OBJECT
 public:
     explicit SensorHub(QObject *parent = 0);
-    void send(const QJsonObject& obj);
+    void sendMessage(const QJsonObject& obj);
 
 signals:
-    void eventReceived(QJsonObject obj);
-
-public slots:
+    void messageReceived(QJsonObject obj);
 
 private slots:
     void dataReady();

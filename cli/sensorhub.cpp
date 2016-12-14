@@ -16,10 +16,10 @@ SensorHub::SensorHub(QObject *parent) : QObject(parent)
 
     _socket.connectToServer("/tmp/sensor-hub.socket");
     _socket.waitForConnected();
-    qDebug() << "connected";
+    qDebug() << "Sensorhub Connected";
 }
 
-void SensorHub::send(const QJsonObject& obj)
+void SensorHub::sendMessage(const QJsonObject& obj)
 {
     QJsonDocument doc;
     doc.setObject(obj);
@@ -58,7 +58,7 @@ void SensorHub::dataReady()
             QJsonObject obj = doc.object();
             qDebug() << "Sensorhub Received" << obj;
 
-            emit eventReceived(obj);
+            emit messageReceived(obj);
 
             /*if(obj["event"].toString() == "DeviceDiscovered") {
                 qDebug() << obj["data"].toObject()["name"].toString();

@@ -12,7 +12,7 @@ Controller::Controller(MQTT& broker, SensorHub& hub) :
     _scanning(false)
 {
     connect(&_broker,&MQTT::messageReceived,this, &Controller::brokerMessageReceived);
-    connect(&_hub,&SensorHub::eventReceived,this, &Controller::hubMessageReceived);
+    connect(&_hub,&SensorHub::messageReceived,this, &Controller::hubMessageReceived);
 
     brokerResendStatus(); //to reset the previous persistent message
 }
@@ -94,7 +94,7 @@ void Controller::hubDeviceConnected(const QString &address, const QJsonObject&)
         data["odr"] = 95;
         msg["data"] = data;
 
-        _hub.send(msg);
+        _hub.sendMessage(msg);
     }
 }
 
@@ -112,7 +112,7 @@ void Controller::hubGyroConfigured(const QString &address, const QJsonObject&)
         data["odr"] = 50;
         msg["data"] = data;
 
-        _hub.send(msg);
+        _hub.sendMessage(msg);
     }
 }
 
@@ -130,7 +130,7 @@ void Controller::hubAccelConfigured(const QString &address, const QJsonObject &)
         data["odr"] = DATA_PER_SEC;
         msg["data"] = data;
 
-        _hub.send(msg);
+        _hub.sendMessage(msg);
     }
 }
 
@@ -142,7 +142,7 @@ void Controller::hubTempConfigured(const QString &address, const QJsonObject&)
         QJsonObject msg;
         msg["command"] = "StartMeasurement";
         msg["device"] = address;
-        _hub.send(msg);
+        _hub.sendMessage(msg);
         _connectedList.append(address);
 
         brokerResendStatus(); //because the device is now connected
@@ -237,7 +237,7 @@ void Controller::hubMeasureStopped(const QString &address, const QJsonObject&)
         QJsonObject msg;
         msg["command"] = "Disconnect";
         msg["device"] = address;
-        _hub.send(msg);
+        _hub.sendMessage(msg);
     }
 }
 
@@ -250,7 +250,7 @@ void Controller::brokerCmdScan(bool shouldScan)
     }
     _scanning = shouldScan;
 
-    if(_scanning) {
+    if(!_scanning) {
         _scanAddresses.clear();
         _scanList = QJsonArray();
     }
@@ -258,7 +258,7 @@ void Controller::brokerCmdScan(bool shouldScan)
     QJsonObject msg;
     msg["device"]="";
     msg["command"] = (shouldScan)?"StartBleScan":"StopBleScan";
-    _hub.send(msg);
+    _hub.sendMessage(msg);
 
     brokerResendStatus(); //Because scan has changed it's value
 }
@@ -270,7 +270,7 @@ void Controller::brokerCmdConnect(const QString &address)
         QJsonObject msg;
         msg["command"] = "Connect";
         msg["device"] = address;
-        _hub.send(msg);
+        _hub.sendMessage(msg);
     }
 }
 
@@ -281,7 +281,7 @@ void Controller::brokerCmdDisconnect(const QString &address)
         msg["command"] = "StopMeasurement";
         //msg["command"] = "Disconnect";
         msg["device"] = address;
-        _hub.send(msg);
+        _hub.sendMessage(msg);
 
         //Temporary to fix
         //TODO: remove?
