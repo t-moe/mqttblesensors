@@ -23,7 +23,7 @@
 
 
 
-void MQTT::connlost(void *context, char *cause)
+void MQTT::onConnectionLost(void *context, char *cause)
 {
     MQTT* inst = static_cast<MQTT*>(context);
     int rc;
@@ -83,7 +83,7 @@ void MQTT::onConnect(void* context, MQTTAsync_successData* response)
 }
 
 
-int MQTT::msgarrvd(void *context, char *topicName, int topicLen, MQTTAsync_message *message)
+int MQTT::onMessageArrived(void *context, char *topicName, int topicLen, MQTTAsync_message *message)
 {
     MQTT* inst = static_cast<MQTT*>(context);
 
@@ -130,16 +130,13 @@ MQTT::MQTT(QObject *parent) : QObject(parent), _connOpts(MQTTAsync_connectOption
 
     MQTTAsync_create(&_client, ADRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
 
-    MQTTAsync_setCallbacks(_client, this, connlost, msgarrvd, NULL);
+    MQTTAsync_setCallbacks(_client, this, onConnectionLost, onMessageArrived, NULL);
 
 
     if ((rc = MQTTAsync_connect(_client, &_connOpts)) != MQTTASYNC_SUCCESS)
     {
         qDebug() << "Failed to start connect, return code" << rc;
-        return;
     }
-
-
 }
 
 void MQTT::sendMesage(const QJsonObject &msg,  bool persist)

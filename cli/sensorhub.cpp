@@ -4,13 +4,20 @@
 
 SensorHub::SensorHub(QObject *parent) : QObject(parent)
 {
+    //Connect to socket signals
+
+    //On data receive
     connect(&_socket,&QLocalSocket::readyRead,this,&SensorHub::dataReady);
-    connect(&_socket, static_cast<void (QLocalSocket::*)(QLocalSocket::LocalSocketError)>(&QLocalSocket::error),this,[](QLocalSocket::LocalSocketError err) {
-       qDebug() << err;
+
+    //On error
+    connect(&_socket, static_cast<void (QLocalSocket::*)(QLocalSocket::LocalSocketError)>(&QLocalSocket::error),
+            this,[](QLocalSocket::LocalSocketError err) {
+       qDebug() << "Sensorhub Socket error" << err;
     });
 
+    //On state change
     connect(&_socket,&QLocalSocket::stateChanged,this,[](QLocalSocket::LocalSocketState state) {
-       qDebug() << state;
+       qDebug() << "Sensorhub Socket Statechange" << state;
     });
 
 
@@ -34,38 +41,33 @@ void SensorHub::sendMessage(const QJsonObject& obj)
 void SensorHub::dataReady()
 {
 
-    _unparsedBytes.append(_socket.readAll());
+    _unparsedBytes.append(_socket.readAll()); //append bytes from socket to bytebuffer
 
-    while (true) {
-        QString str(_unparsedBytes);
+    while (true) { //parsing loop
+        QString str(_unparsedBytes); //Create string from bytebuffer
 
         QString err;
-        int l = SensorHub::findEndOfJson(str, &err);
+        int l = SensorHub::findEndOfJson(str, &err); //Check if the string already contains a full jsonobject (=> fast string scanning)
 
 
         if (l > 0) { //json object found
-            QString m = str.left(l);
+            QString m = str.left(l); //Create string only with the required number of bytes
             QByteArray r = m.toUtf8();
-            _unparsedBytes.remove(0, r.length());
+            _unparsedBytes.remove(0, r.length()); //Remove bytes from bytebuffer
 
+            //Try to convert String into JsonObject (=> real parsing happens)
             QJsonParseError scanErr;
             QJsonDocument doc = QJsonDocument::fromJson(r,&scanErr);
-            if(scanErr.error!=QJsonParseError::NoError) {
+            if(scanErr.error!=QJsonParseError::NoError) { //Parsing error occured
                 qDebug() << scanErr.errorString();
                 qDebug() << QString(r);
+                continue;
             }
 
             QJsonObject obj = doc.object();
             qDebug() << "Sensorhub Received" << obj;
 
             emit messageReceived(obj);
-
-            /*if(obj["event"].toString() == "DeviceDiscovered") {
-                qDebug() << obj["data"].toObject()["name"].toString();
-            }*/
-
-
-
         } else {
             if (l < 0) { //fatal parser error
                 qDebug() << err;

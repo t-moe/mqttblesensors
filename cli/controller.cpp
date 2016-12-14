@@ -29,7 +29,7 @@ void Controller::brokerMessageReceived(const QJsonObject &obj)
        QString adress = obj["disconnect"].toString();
        brokerCmdDisconnect(adress);
    } else {
-       qDebug() << "Unknown command" << obj;
+       qDebug() << "Controller received unknown command" << obj;
    }
 
 }
@@ -56,7 +56,7 @@ void Controller::hubMessageReceived(const QJsonObject &obj)
         QJsonObject data = obj["data"].toObject();
         QString adress = obj["device"].toString();
 
-        auto memfcn = callbacks[type]; //get member function out of callback map
+        auto memfcn = callbacks[type]; //Get member function out of callback map
         (this->*memfcn)(adress,data); //Call member function on "this" instance
     } else {
         qDebug() << "Unknown event type" << type;
@@ -68,7 +68,8 @@ void Controller::hubDeviceDiscovered(const QString &, const QJsonObject &device)
     if(_scanning) {
         QString addr = device["id"].toString();
         QString desc = device["name"].toString();
-        if(!_scanAdresses.contains(addr)) {
+
+        if(!_scanAdresses.contains(addr)) { //Device not in Scanlist yet
             QJsonObject deviceObject;
             deviceObject["addr"] = addr;
             deviceObject["desc"] = desc;
@@ -82,7 +83,7 @@ void Controller::hubDeviceDiscovered(const QString &, const QJsonObject &device)
 
 void Controller::hubDeviceConnected(const QString &adress, const QJsonObject&)
 {
-    if(_connectedDevices.contains(adress)) {
+    if(_connectedDevices.contains(adress)) { //Device is already in map (=> probably has state connecting)
         _connectedDevices[adress] = Controller::Connected;
         QJsonObject msg;
         msg["command"] = "ConfigGyro";
@@ -165,13 +166,14 @@ void Controller::hubDeviceDisconnected(const QString &adress, const QJsonObject&
 void Controller::hubGyroData(const QString& adress,const QJsonObject &data)
 {
     if(_connectedDevices.contains(adress)) {
+
+        //------Rate limiting------
         if(_lastGyroData.isValid() && ((QDateTime::currentDateTime().toMSecsSinceEpoch() - _lastGyroData.toMSecsSinceEpoch()) < 1000/DATA_PER_SEC)) {
             return; //ignore value
         }
         _lastGyroData = QDateTime::currentDateTime();
 
-
-
+        //------Send value to broker-----
         static const double factor = 17.5e-3;
 
         QJsonObject raw;
@@ -193,12 +195,14 @@ void Controller::hubGyroData(const QString& adress,const QJsonObject &data)
 void Controller::hubAccelData(const QString &adress, const QJsonObject &data)
 {
     if(_connectedDevices.contains(adress)) {
+
+        //------Rate limiting------
         if(_lastAccelData.isValid() && ((QDateTime::currentDateTime().toMSecsSinceEpoch() - _lastAccelData.toMSecsSinceEpoch()) < 1000/DATA_PER_SEC)) {
             return; //ignore value
         }
         _lastAccelData = QDateTime::currentDateTime();
 
-
+         //------Send value to broker-----
         static const double factor = 0.122e-3;
 
         QJsonObject raw;
@@ -220,6 +224,10 @@ void Controller::hubAccelData(const QString &adress, const QJsonObject &data)
 void Controller::hubTemperatureData(const QString &adress, const QJsonObject &data)
 {
     if(_connectedDevices.contains(adress)) {
+
+        //(no rate limiting required)
+
+        //------Send value to broker-----
         QJsonObject dat;
         dat["device"] = adress;
         dat["type"] = "temperature";

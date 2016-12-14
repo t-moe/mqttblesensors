@@ -45,12 +45,12 @@ private:
 
     //-------------------MQTT Library callbacks--------------------------
     // context parameter is always a reference to our MQTT class instance ("this")
-    static void connlost(void *context, char *cause);
+    static void onConnectionLost(void *context, char *cause);
     static void onDisconnect(void* context, MQTTAsync_successData* response);
     static void onSend(void* context, MQTTAsync_successData* response);
     static void onConnectFailure(void* context, MQTTAsync_failureData* response);
     static void onConnect(void* context, MQTTAsync_successData* response);
-    static int msgarrvd(void *context, char *topicName, int topicLen, MQTTAsync_message *message);
+    static int onMessageArrived(void *context, char *topicName, int topicLen, MQTTAsync_message *message);
 };
 
 #endif // MQTT_H
