@@ -13,61 +13,61 @@
 <body>
 
 <header>
-	<ul class="w3-navbar">
-		<li><a href="javascript:void(0)" onclick="openMenuItem('Configuration')">Configuration</a></li>
-		<li><a href="javascript:void(0)" onclick="openMenuItem('Measure')">Measure</a></li>
-	</ul>
+    <ul class="w3-navbar">
+        <li><a href="javascript:void(0)" onclick="openMenuItem('Configuration')">Configuration</a></li>
+        <li><a href="javascript:void(0)" onclick="openMenuItem('Measure')">Measure</a></li>
+    </ul>
 </header>
 
 <div id="Configuration" class="menuItem">
-	<div class="w3-container w3-teal">
-		<h2>Configuration</h2>
-	</div>
-	<div class="w3-panel">
-  		<input type="checkbox" id="scanCB" /> Scan
-		<p>Gefundene BLE Sensoren:<p>
-		
-		
-		<ul class="w3-ul w3-card-4 w3-margin-top" id="ScanList">
-			<li class="w3-padding-16" style="display:none;" >
-				<span class="w3-xlarge">Template Device Name</span><br>
-				<span>Disconnected</span>
-			</li>
-		</ul>
-	</div>
+    <div class="w3-container w3-teal">
+        <h2>Configuration</h2>
+    </div>
+    <div class="w3-panel">
+        <input type="checkbox" id="scanCB" /> Scan
+        <p>Gefundene BLE Sensoren:<p>
+        
+        
+        <ul class="w3-ul w3-card-4 w3-margin-top" id="ScanList">
+            <li class="w3-padding-16" style="display:none;" >
+                <span class="w3-xlarge">Template Device Name</span><br>
+                <span>Disconnected</span>
+            </li>
+        </ul>
+    </div>
 </div>
 
 <div id="Measure" class="menuItem">
-	<div class="w3-container w3-teal">
-		<h2>Measure</h2>
-	</div>
-	<div class="w3-panel">
-	<div class="w3-panel w3-light-grey">
-		<p>Temperature</p>
-		<div id="tempChart" style="width: 700px; height: 350px"></div><br>
-	</div>
-  	
-	<div class="w3-panel w3-light-grey">
-		<p>Acceleration</p>
-		<div id="accelChart" style="width: 700px; height: 350px"></div><br>
-	</div>
-  	
-	<div class="w3-panel w3-light-grey">
-		<p>Gyroscope</p>
-		<div id="gyroChart" style="width: 700px; height: 350px"></div><br>
-	</div>
+    <div class="w3-container w3-teal">
+        <h2>Measure</h2>
+    </div>
+    <div class="w3-panel">
+    <div class="w3-panel w3-light-grey">
+        <p>Temperature</p>
+        <div id="tempChart" style="width: 700px; height: 350px"></div><br>
+    </div>
+    
+    <div class="w3-panel w3-light-grey">
+        <p>Acceleration</p>
+        <div id="accelChart" style="width: 700px; height: 350px"></div><br>
+    </div>
+    
+    <div class="w3-panel w3-light-grey">
+        <p>Gyroscope</p>
+        <div id="gyroChart" style="width: 700px; height: 350px"></div><br>
+    </div>
 </body>
 
 <script>
 
 /*------------------------------------------------------------------------------+
-|	Javascript code for web navigation and communication to broker				|
+|   Javascript code for web navigation and communication to broker              |
 +------------------------------------------------------------------------------*/
 openMenuItem("Configuration");
 
 /* Google Chart */
-var measuresPerSec = 4;	// number of received data per second
-var recordTime = 30;	// duration of chart in seconds
+var measuresPerSec = 4; // number of received data per second
+var recordTime = 30;    // duration of chart in seconds
 var isFirstOpen = true; // first open flag for measure tab
 
 google.charts.load('current', {packages: ['line']});
@@ -77,16 +77,16 @@ function openMenuItem(Item) {
   $(".menuItem").hide();
   $("#"+Item).show();
   if(Item == "Measure" && isFirstOpen){
-  	drawChartAccel();
-  	drawChartGyro();
-  	drawChartTemp();
-	isFirstOpen = false;
+    drawChartAccel();
+    drawChartGyro();
+    drawChartTemp();
+    isFirstOpen = false;
   }
 }
 
 
 /*------------------------------------------------------------------------------+
-|	Data communication															|
+|   Data communication                                                          |
 +------------------------------------------------------------------------------*/
 
 // Parameters
@@ -112,16 +112,16 @@ client.connect({
 function onMessageArrived(message) {
     var obj = JSON.parse(message.payloadString);
     
-	if ("status" in obj) { //status message arrived
-		statusChange(obj.status);
-	}
-	else if("data" in obj){	//data message arrived
-		dataArrived(obj.data); 
-	}
-	else { // in case of undefined message -> console log
-		console.log("Command not understood");
-		console.log("Message arrived: topic=" + message.destinationName + ", message=",obj);
-	}
+    if ("status" in obj) { //status message arrived
+        statusChange(obj.status);
+    }
+    else if("data" in obj){ //data message arrived
+        dataArrived(obj.data); 
+    }
+    else { // in case of undefined message -> console log
+        console.log("Command not understood");
+        console.log("Message arrived: topic=" + message.destinationName + ", message=",obj);
+    }
 }
 
 /* send a message to broker */
